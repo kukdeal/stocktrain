@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>技术分析五层阶梯 · Handbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+<style>
+:root{
+  --ground:#EAEDF1; --surface:#FFFFFF; --surface-2:#F3F5F8;
+  --ink:#131C25; --ink-2:#3D4B58; --ink-3:#6B7A88;
+  --line:#CDD5DE; --line-soft:#E1E6EC;
+  --accent:#16496F; --accent-soft:#DFE9F1;
+  --brass:#8F6716; --brass-soft:#F0E7D4;
+  --up:#BF3728; --down:#0F7551;
+  --shadow:0 1px 2px rgba(19,28,37,.05), 0 10px 30px -14px rgba(19,28,37,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D131A; --surface:#151E26; --surface-2:#1C262F;
+    --ink:#E2E9EF; --ink-2:#B2C0CB; --ink-3:#7F92A1;
+    --line:#2B3945; --line-soft:#212D37;
+    --accent:#72AEDC; --accent-soft:#1A2C3B;
+    --brass:#D6AB5F; --brass-soft:#2E2618;
+    --up:#E56B5C; --down:#3FBA8C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D131A; --surface:#151E26; --surface-2:#1C262F;
+  --ink:#E2E9EF; --ink-2:#B2C0CB; --ink-3:#7F92A1;
+  --line:#2B3945; --line-soft:#212D37;
+  --accent:#72AEDC; --accent-soft:#1A2C3B;
+  --brass:#D6AB5F; --brass-soft:#2E2618;
+  --up:#E56B5C; --down:#3FBA8C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  line-height:1.8; min-height:100vh;
+  display:flex; align-items:center; justify-content:center; padding:48px 24px;
+}
+.wrap{max-width:880px; width:100%}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.08em; color:var(--brass); text-transform:uppercase}
+h1{font-family:"Noto Serif SC","Songti SC",serif; font-size:clamp(30px,5vw,44px); line-height:1.3; margin:12px 0 14px; text-wrap:balance}
+.lede{color:var(--ink-2); max-width:62ch; margin:0 0 36px}
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px}
+a.card{
+  display:block; background:var(--surface); border:1px solid var(--line); border-radius:4px;
+  padding:26px 28px 22px; text-decoration:none; color:var(--ink); box-shadow:var(--shadow);
+  border-top:4px solid var(--accent);
+  transition:transform .15s, box-shadow .15s;
+}
+a.card:hover{transform:translateY(-3px)}
+a.card:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+a.card .lang{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em; color:var(--brass); display:block; margin-bottom:10px}
+a.card h2{font-family:"Noto Serif SC",serif; font-size:22px; margin:0 0 10px; line-height:1.4}
+a.card p{margin:0 0 14px; font-size:14px; color:var(--ink-3); line-height:1.7}
+a.card .go{font-size:13.5px; color:var(--accent); font-weight:500}
+.convention{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; padding:2px 8px; border-radius:2px; margin-left:8px; vertical-align:1px}
+.cn-conv{background:color-mix(in srgb,var(--up) 12%,transparent); color:var(--up)}
+.en-conv{background:color-mix(in srgb,var(--down) 12%,transparent); color:var(--down)}
+.meta{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3)}
+.meta a{color:var(--accent); text-decoration:none; border-bottom:1px solid var(--line)}
+.meta .row{margin-bottom:4px}
+@media (prefers-reduced-motion:reduce){a.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Stocktrain · Technical Analysis Handbook</div>
+  <h1>技术分析五层阶梯</h1>
+  <p class="lede">从 K 线到斐波那契的五层理论，加上实战 SOP、资金管理、复盘工具、15 个指标算法、缠论与期权——中英双语，36 张手绘示意图。选择语言进入：</p>
+
+  <div class="cards">
+    <a class="card" href="./技术分析五层阶梯-入门手册.html">
+      <span class="lang">简体中文 · ZH</span>
+      <h2>技术分析五层阶梯 · 入门手册<span class="convention cn-conv">红涨绿跌</span></h2>
+      <p>K线 → 均线 → 趋势线 → 波浪 → 斐波那契 → 交易SOP → 风控 → 复盘 → 指标库 → 缠论 → 期权。按大陆图表习惯配色。</p>
+      <span class="go">进入中文版 →</span>
+    </a>
+    <a class="card" href="./Technical-Analysis-Ladder-EN.html">
+      <span class="lang">English · EN</span>
+      <h2>The Technical Analysis Ladder<span class="convention en-conv">green up / red down</span></h2>
+      <p>Candlesticks → MAs → trendlines → Elliott → Fibonacci → trading SOP → risk → review → indicators → Chan Theory → options. Western chart color convention.</p>
+      <span class="go">Open English edition →</span>
+    </a>
+  </div>
+
+  <div class="meta">
+    <div class="row">在线版（可分享链接）：<a href="https://claude.ai/code/artifact/8b7f7a58-b2f0-42d3-8220-c6ae8730f329">中文</a> · <a href="https://claude.ai/code/artifact/de07dbeb-13be-4d89-8683-febc7b5cd571">English</a></div>
+    <div class="row">两个页面内右上角眉栏可互相切换语言。仅供学习，不构成投资建议。</div>
+  </div>
+</div>
+</body>
+</html>
