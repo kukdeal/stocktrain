@@ -1,0 +1,2222 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}</style>
+</head><body><title>The Technical Analysis Ladder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
+
+<style>
+:root{
+  --ground:#EAEDF1;
+  --surface:#FFFFFF;
+  --surface-2:#F3F5F8;
+  --ink:#131C25;
+  --ink-2:#3D4B58;
+  --ink-3:#6B7A88;
+  --line:#CDD5DE;
+  --line-soft:#E1E6EC;
+  --accent:#16496F;
+  --accent-soft:#DFE9F1;
+  --brass:#8F6716;
+  --brass-soft:#F0E7D4;
+  --up:#0F7551;--down:#BF3728;
+  --warn:#B4601A;
+  --grid:rgba(22,73,111,.07);
+  --shadow:0 1px 2px rgba(19,28,37,.05), 0 8px 24px -12px rgba(19,28,37,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D131A;
+    --surface:#151E26;
+    --surface-2:#1C262F;
+    --ink:#E2E9EF;
+    --ink-2:#B2C0CB;
+    --ink-3:#7F92A1;
+    --line:#2B3945;
+    --line-soft:#212D37;
+    --accent:#72AEDC;
+    --accent-soft:#1A2C3B;
+    --brass:#D6AB5F;
+    --brass-soft:#2E2618;
+    --up:#3FBA8C;--down:#E56B5C;
+    --warn:#DE9A55;
+    --grid:rgba(114,174,220,.09);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D131A;
+  --surface:#151E26;
+  --surface-2:#1C262F;
+  --ink:#E2E9EF;
+  --ink-2:#B2C0CB;
+  --ink-3:#7F92A1;
+  --line:#2B3945;
+  --line-soft:#212D37;
+  --accent:#72AEDC;
+  --accent-soft:#1A2C3B;
+  --brass:#D6AB5F;
+  --brass-soft:#2E2618;
+  --up:#3FBA8C;--down:#E56B5C;
+  --warn:#DE9A55;
+  --grid:rgba(114,174,220,.09);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Noto Serif SC","Songti SC",serif;text-wrap:balance;margin:0;line-height:1.35}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+/* ---------- shell ---------- */
+.shell{max-width:1240px;margin:0 auto;padding:0 24px 96px;display:grid;grid-template-columns:236px minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:960px){.shell{grid-template-columns:minmax(0,1fr);gap:0}}
+
+/* ---------- sidebar ---------- */
+.side{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:36px 0 48px;font-size:13.5px}
+.side::-webkit-scrollbar{width:6px}
+.side::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.side .brand{font-family:"Noto Serif SC",serif;font-weight:700;font-size:16px;letter-spacing:.02em;margin-bottom:4px}
+.side .brand-sub{font-size:11px;letter-spacing:.18em;color:var(--ink-3);text-transform:uppercase;margin-bottom:22px}
+.side ol{list-style:none;margin:0;padding:0}
+.side .grp{font-size:10.5px;letter-spacing:.1em;color:var(--ink-3);margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line-soft)}
+.side a{display:flex;gap:9px;align-items:baseline;color:var(--ink-2);text-decoration:none;padding:4px 0;line-height:1.5;border-left:2px solid transparent;padding-left:10px;margin-left:-12px;transition:color .15s,border-color .15s}
+.side a:hover{color:var(--accent);border-left-color:var(--accent)}
+.side a .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);flex:0 0 auto}
+@media (max-width:960px){
+  .side{position:static;max-height:none;padding:24px 0 8px;border-bottom:1px solid var(--line)}
+  .side ol{columns:2;column-gap:24px}
+}
+
+/* ---------- main ---------- */
+main{padding-top:36px;min-width:0}
+section{scroll-margin-top:24px}
+p{margin:0 0 1.1em;max-width:66ch}
+main > section > p, .prose p{color:var(--ink-2)}
+strong{color:var(--ink);font-weight:700}
+em{font-style:normal;color:var(--accent);font-weight:500}
+
+/* hero */
+.hero{padding:8px 0 8px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.08em;color:var(--brass);text-transform:uppercase}
+.hero h1{font-size:clamp(34px,5.2vw,54px);font-weight:700;letter-spacing:.01em;margin:14px 0 18px}
+.hero .lede{font-size:18px;line-height:1.8;color:var(--ink-2);max-width:60ch}
+.hero .lede b{color:var(--ink)}
+
+/* chapter head */
+.chap{margin-top:72px;padding-top:8px}
+.chap-head{border-top:2px solid var(--ink);padding-top:14px;margin-bottom:8px}
+.chap-head .tag{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.chap-head .lvl{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;color:var(--brass)}
+.chap-head .goal{font-size:12.5px;color:var(--ink-3)}
+.chap-head h2{font-size:clamp(25px,3.4vw,33px);margin-top:6px}
+h3{font-size:19px;margin:44px 0 12px;padding-left:12px;border-left:3px solid var(--accent)}
+h4{font-size:15.5px;margin:26px 0 8px;color:var(--ink)}
+
+/* figures */
+figure{margin:28px 0;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:20px 20px 16px;box-shadow:var(--shadow);overflow-x:auto}
+figure svg{display:block;width:100%;height:auto;min-width:520px;color:var(--ink-3)}
+figcaption{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;line-height:1.7;color:var(--ink-3);min-width:520px}
+figcaption b{color:var(--ink-2);font-weight:500}
+.fig-num{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;color:var(--brass);margin-right:8px}
+
+/* svg helpers */
+.s-up{stroke:var(--up)}
+.f-up{fill:var(--up)}
+.s-dn{stroke:var(--down)}
+.f-dn{fill:var(--down)}
+.s-ac{stroke:var(--accent)}
+.f-ac{fill:var(--accent)}
+.s-br{stroke:var(--brass)}
+.f-br{fill:var(--brass)}
+.body-fill{fill:var(--surface)}
+.axis{stroke:var(--line);stroke-width:1}
+.gridline{stroke:var(--line-soft);stroke-width:1}
+.lbl{fill:var(--ink-2);font-family:"Noto Sans SC",sans-serif;font-size:12.5px}
+.lbl-s{fill:var(--ink-3);font-family:"Noto Sans SC",sans-serif;font-size:11.5px}
+.num{fill:var(--ink-2);font-family:"IBM Plex Mono",monospace;font-size:12px}
+.num-s{fill:var(--ink-3);font-family:"IBM Plex Mono",monospace;font-size:10.5px}
+.ttl{fill:var(--ink);font-family:"Noto Serif SC",serif;font-size:14px;font-weight:600}
+.lead{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+
+/* callouts */
+.note{border-left:3px solid var(--brass);background:var(--brass-soft);padding:14px 18px;margin:24px 0;border-radius:0 3px 3px 0;font-size:14.5px;line-height:1.75}
+.note p{margin:0;color:var(--ink-2);max-width:none}
+.note .h{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--brass);margin-bottom:6px}
+.warn{border-left-color:var(--up);background:color-mix(in srgb,var(--up) 8%,transparent)}
+.warn .h{color:var(--up)}
+.tip{border-left-color:var(--accent);background:var(--accent-soft)}
+.tip .h{color:var(--accent)}
+
+/* rules cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:16px 18px}
+.card .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--brass);display:block;margin-bottom:6px}
+.card b{display:block;font-family:"Noto Serif SC",serif;font-size:15.5px;margin-bottom:6px}
+.card p{margin:0;font-size:13.5px;line-height:1.7;color:var(--ink-3);max-width:none}
+
+/* tables */
+.table-wrap{overflow-x:auto;margin:24px 0;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.65}
+th{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-3);text-transform:uppercase;background:var(--surface-2);border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td b{font-weight:700}
+
+/* lists */
+ul,ol.list{padding-left:20px;margin:0 0 1.2em;max-width:66ch;color:var(--ink-2)}
+li{margin-bottom:.4em}
+li::marker{color:var(--ink-3)}
+
+/* checklist */
+.check{list-style:none;padding:0;margin:20px 0;max-width:none}
+.check li{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;background:var(--surface);border:1px solid var(--line);border-radius:3px;margin-bottom:8px;font-size:14.5px;line-height:1.65}
+.check li .box{flex:0 0 auto;width:15px;height:15px;border:1.5px solid var(--accent);border-radius:2px;margin-top:5px}
+.check li b{display:block}
+.check li span.d{display:block;font-size:13px;color:var(--ink-3);margin-top:2px}
+
+/* formula */
+.formula{background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:16px 20px;margin:20px 0;font-family:"IBM Plex Mono",monospace;font-size:14.5px;line-height:2;overflow-x:auto;color:var(--ink)}
+.formula .c{color:var(--ink-3);font-size:12.5px}
+
+/* footer */
+.foot{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.foot p{max-width:70ch;color:var(--ink-3)}
+
+a.up-link{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+      <polygon points="0,0 8,3.2 0,6.4" fill="var(--ink-3)"></polygon>
+    </marker>
+    <marker id="ar-ac" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+      <polygon points="0,0 8,3.2 0,6.4" fill="var(--accent)"></polygon>
+    </marker>
+    <marker id="ar-up" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+      <polygon points="0,0 8,3.2 0,6.4" fill="var(--up)"></polygon>
+    </marker>
+    <marker id="ar-dn" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+      <polygon points="0,0 8,3.2 0,6.4" fill="var(--down)"></polygon>
+    </marker>
+    <marker id="ar-br" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+      <polygon points="0,0 8,3.2 0,6.4" fill="var(--brass)"></polygon>
+    </marker>
+  </defs>
+</svg>
+
+<div class="shell">
+
+<nav class="side" aria-label="Table of contents">
+  <div class="brand">The Technical Analysis Ladder</div>
+  <div class="brand-sub mono">Handbook</div>
+  <ol>
+    <li><a href="#how"><span class="n">00</span><span>How to use this handbook</span></a></li>
+    <div class="grp mono">LADDER · THEORY</div>
+    <li><a href="#c1"><span class="n">01</span><span>Candlestick charts</span></a></li>
+    <li><a href="#c2"><span class="n">02</span><span>Moving averages</span></a></li>
+    <li><a href="#c3"><span class="n">03</span><span>Trendlines &amp; S/R</span></a></li>
+    <li><a href="#c4"><span class="n">04</span><span>Elliott Wave</span></a></li>
+    <li><a href="#c5"><span class="n">05</span><span>Fibonacci</span></a></li>
+    <div class="grp mono">PRACTICE</div>
+    <li><a href="#c6"><span class="n">A</span><span>The full trading SOP</span></a></li>
+    <li><a href="#c7"><span class="n">B</span><span>Money management</span></a></li>
+    <li><a href="#c8"><span class="n">C</span><span>Practice &amp; review</span></a></li>
+    <div class="grp mono">EXTEND</div>
+    <li><a href="#c9"><span class="n">D</span><span>Indicator library</span></a></li>
+    <li><a href="#c10"><span class="n">E</span><span>Chan Theory</span></a></li>
+    <li><a href="#c11"><span class="n">F</span><span>Options</span></a></li>
+    <div class="grp mono">APPENDIX</div>
+    <li><a href="#gloss"><span class="n">—</span><span>Glossary</span></a></li>
+    <li><a href="#traps"><span class="n">—</span><span>Ten common mistakes</span></a></li>
+  </ol>
+</nav>
+
+<main>
+
+<header class="hero">
+  <div class="eyebrow">From candlesticks to Fibonacci · A beginner's operating manual · <a href="./技术分析五层阶梯-入门手册.html" style="color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)">中文版 ↗</a></div>
+  <h1>Stack five tools into one method you can actually trade</h1>
+  <p class="lede">Technical analysis is not five disconnected topics — it is <b>a ladder climbed in order</b>: candlesticks tell you who won today, moving averages give you direction, trendlines draw the map, Elliott Wave supplies the rhythm, and Fibonacci turns "roughly there" into numbers. This handbook covers the theory in that order, then adds the parts that actually decide your P&amp;L — <b>a step-by-step trading procedure, a set of money-management rules, and a review toolkit</b>.</p>
+</header>
+
+<section id="how">
+  <div class="chap-head" style="margin-top:56px">
+    <div class="tag"><span class="lvl">00 · START HERE</span><span class="goal">About 5 minutes</span></div>
+    <h2>How to use this handbook</h2>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 328" role="img" aria-label="The five-rung ladder: candlesticks, moving averages, trendlines and support/resistance, Elliott Wave, Fibonacci — each level builds on the one below">
+      <g transform="translate(0,-102)">
+      <line class="axis" x1="30" y1="400" x2="875" y2="400"></line>
+      <g>
+        <rect x="45" y="330" width="150" height="70" fill="var(--accent-soft)" stroke="var(--line)"></rect>
+        <rect x="45" y="330" width="150" height="6" class="f-ac"></rect>
+        <text class="num" x="120" y="372" text-anchor="middle" fill="var(--accent)">01</text>
+        <text class="ttl" x="120" y="300" text-anchor="middle">Candlesticks</text>
+        <text class="lbl-s" x="120" y="320" text-anchor="middle">Read the daily battle</text>
+      </g>
+      <g>
+        <rect x="215" y="290" width="150" height="110" fill="var(--accent-soft)" stroke="var(--line)"></rect>
+        <rect x="215" y="290" width="150" height="6" class="f-ac"></rect>
+        <text class="num" x="290" y="352" text-anchor="middle" fill="var(--accent)">02</text>
+        <text class="ttl" x="290" y="260" text-anchor="middle">Moving averages</text>
+        <text class="lbl-s" x="290" y="280" text-anchor="middle">Find the direction</text>
+      </g>
+      <g>
+        <rect x="385" y="250" width="150" height="150" fill="var(--accent-soft)" stroke="var(--line)"></rect>
+        <rect x="385" y="250" width="150" height="6" class="f-ac"></rect>
+        <text class="num" x="460" y="332" text-anchor="middle" fill="var(--accent)">03</text>
+        <text class="ttl" x="460" y="220" text-anchor="middle">Trendlines · S/R</text>
+        <text class="lbl-s" x="460" y="240" text-anchor="middle">Draw the map</text>
+      </g>
+      <g>
+        <rect x="555" y="210" width="150" height="190" fill="var(--accent-soft)" stroke="var(--line)"></rect>
+        <rect x="555" y="210" width="150" height="6" class="f-ac"></rect>
+        <text class="num" x="630" y="312" text-anchor="middle" fill="var(--accent)">04</text>
+        <text class="ttl" x="630" y="180" text-anchor="middle">Elliott Wave</text>
+        <text class="lbl-s" x="630" y="200" text-anchor="middle">Feel the rhythm</text>
+      </g>
+      <g>
+        <rect x="725" y="170" width="150" height="230" fill="var(--accent-soft)" stroke="var(--line)"></rect>
+        <rect x="725" y="170" width="150" height="6" class="f-ac"></rect>
+        <text class="num" x="800" y="292" text-anchor="middle" fill="var(--accent)">05</text>
+        <text class="ttl" x="800" y="140" text-anchor="middle">Fibonacci</text>
+        <text class="lbl-s" x="800" y="160" text-anchor="middle">Quantify the targets</text>
+      </g>
+      <path d="M 55 418 L 865 418" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ar-br)" fill="none"></path>
+      <text class="num-s" x="60" y="412" fill="var(--brass)">EASY</text>
+      <text class="num-s" x="830" y="412" fill="var(--brass)">HARD</text>
+      </g>
+    </svg>
+    <figcaption><span class="fig-num">Fig 0-1</span>The further right, the higher — and the harder: <b>each rung stands on the one below it</b>. Counting Elliott waves without candlestick literacy is building the fourth floor on bare ground — the count you produce is only self-reassurance. Learn in order 01→05, and practice each rung for at least two weeks before climbing.</figcaption>
+  </figure>
+
+  <h3>Three reading conventions</h3>
+  <ul>
+    <li><strong>Colors</strong>: this handbook follows the Western convention — <span style="color:var(--up);font-weight:700">green = up (bullish)</span>, <span style="color:var(--down);font-weight:700">red = down (bearish)</span>. Charts in mainland China use the opposite (red up, green down), so confirm the color scheme before trusting your instincts on an unfamiliar chart.</li>
+    <li><strong>Market-agnostic</strong>: only the universal principles of technical analysis are covered here. Where trading rules differ across markets (T+0 vs T+1 settlement, price limits, session hours), the text flags it — your own market's rules take precedence.</li>
+    <li><strong>Picture first, then text</strong>: every section carries a diagram. Study the figure and guess what it is saying before reading the prose — that is exactly the exercise your brain performs in front of a live chart.</li>
+  </ul>
+
+  <div class="note tip">
+    <span class="h mono">HOW TO PRACTICE</span>
+    <p>Reading without drilling teaches nothing. The most effective drill is <strong>bar replay</strong>: rewind a chart three years in your trading software, then step forward one bar at a time — before each new bar, write down "what would I do right now", then reveal it. Thirty bars a day for two weeks builds genuine chart sense — worth more than ten books.</p>
+  </div>
+</section>
+
+<section id="c1" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">LADDER 01 · THE MOTHER OF TECHNICAL ANALYSIS</span><span class="goal">Goal: read what a single candle is saying</span></div>
+    <h2>Candlestick charts — the language of price</h2>
+  </div>
+
+  <p>Candlestick charts originated in eighteenth-century Japan, in the rice markets of the Tokugawa shogunate, as a way to record the daily rise and fall of rice prices. Because one symbol packs in four prices plus the tug-of-war between buyers and sellers, the method was later adopted by securities markets — and three hundred years on it remains the common language of stocks, futures, and FX.</p>
+  <p>The chart has exactly one basic purpose: <em>finding entry and exit points</em>. Every fancier tool is an annotation built on top of it.</p>
+
+  <h3>1.1 The four elements of one candle</h3>
+  <p>A single candle is built from the <strong>open, close, high, and low</strong>. Close above open makes a <strong>bullish candle</strong>; close below open makes a <strong>bearish candle</strong>. The thin lines above and below the body are <strong>wicks (shadows)</strong> — a record of prices the market visited during the day but failed to hold.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 380" role="img" aria-label="Anatomy of a single candlestick: open, close, high, low, upper wick, body, and lower wick, for bullish and bearish candles">
+      <line x1="260" y1="55" x2="260" y2="125" class="s-up" stroke-width="1.6"></line>
+      <line x1="260" y1="255" x2="260" y2="310" class="s-up" stroke-width="1.6"></line>
+      <rect x="238" y="125" width="44" height="130" class="body-fill s-up" stroke-width="1.8"></rect>
+      <line class="lead" x1="158" y1="55" x2="236" y2="55"></line>
+      <line class="lead" x1="158" y1="125" x2="236" y2="125"></line>
+      <line class="lead" x1="158" y1="255" x2="236" y2="255"></line>
+      <line class="lead" x1="158" y1="310" x2="236" y2="310"></line>
+      <text class="lbl" x="150" y="59" text-anchor="end">High</text>
+      <text class="lbl" x="150" y="129" text-anchor="end">Close</text>
+      <text class="lbl" x="150" y="259" text-anchor="end">Open</text>
+      <text class="lbl" x="150" y="314" text-anchor="end">Low</text>
+      <text class="ttl" x="260" y="350" text-anchor="middle" fill="var(--up)">Bullish candle</text>
+      <text class="lbl-s" x="260" y="370" text-anchor="middle">Close &gt; Open</text>
+
+      <line class="lead" x1="284" y1="90" x2="330" y2="90"></line>
+      <line class="lead" x1="284" y1="190" x2="330" y2="190"></line>
+      <line class="lead" x1="284" y1="283" x2="330" y2="283"></line>
+      <text class="lbl-s" x="338" y="94">Upper wick: rally sold off</text>
+      <text class="lbl-s" x="338" y="194">Body: net result of the day</text>
+      <text class="lbl-s" x="338" y="287">Lower wick: dip bought back</text>
+
+      <line x1="560" y1="55" x2="560" y2="110" class="s-dn" stroke-width="1.6"></line>
+      <line x1="560" y1="250" x2="560" y2="310" class="s-dn" stroke-width="1.6"></line>
+      <rect x="538" y="110" width="44" height="140" class="f-dn s-dn" stroke-width="1.8"></rect>
+      <line class="lead" x1="584" y1="55" x2="640" y2="55"></line>
+      <line class="lead" x1="584" y1="110" x2="640" y2="110"></line>
+      <line class="lead" x1="584" y1="250" x2="640" y2="250"></line>
+      <line class="lead" x1="584" y1="310" x2="640" y2="310"></line>
+      <text class="lbl" x="648" y="59">High</text>
+      <text class="lbl" x="648" y="114">Open</text>
+      <text class="lbl" x="648" y="254">Close</text>
+      <text class="lbl" x="648" y="314">Low</text>
+      <text class="ttl" x="560" y="350" text-anchor="middle" fill="var(--down)">Bearish candle</text>
+      <text class="lbl-s" x="560" y="370" text-anchor="middle">Close &lt; Open</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 1-1</span>Note that <b>open and close swap places</b>: on a bullish candle the bottom of the body is the open and the top is the close; on a bearish candle it is the reverse. The length of each wick records the portion of the day's prices that got rejected.</figcaption>
+  </figure>
+
+  <h3>1.2 Measuring bull vs bear strength</h3>
+  <p>The four elements let you read the day's balance of power directly:</p>
+  <div class="formula">
+    Bull strength = Close − Low     <span class="c">// how far price was lifted off the day's bottom</span><br>
+    Bear strength = High − Close    <span class="c">// how far price was knocked down from the day's top</span>
+  </div>
+  <p>Which yields the conclusion beginners most often miss: <em>a bullish candle does not prove the bulls were stronger, and a bearish candle does not prove the bears were</em>.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 360" role="img" aria-label="Strength comparison: a bullish candle with a long upper wick is actually bear-dominated; a bearish candle with a long lower wick is actually bull-dominated">
+      <line x1="230" y1="50" x2="230" y2="190" class="s-up" stroke-width="1.6"></line>
+      <line x1="230" y1="230" x2="230" y2="250" class="s-up" stroke-width="1.6"></line>
+      <rect x="212" y="190" width="36" height="40" class="body-fill s-up" stroke-width="1.8"></rect>
+      <path d="M 178 50 H 168 V 190 H 178" class="s-dn" stroke-width="1.5" fill="none"></path>
+      <path d="M 178 190 H 168 V 250 H 178" class="s-up" stroke-width="1.5" fill="none"></path>
+      <text class="lbl" x="158" y="116" text-anchor="end" fill="var(--down)">Bears 140</text>
+      <text class="lbl" x="158" y="224" text-anchor="end" fill="var(--up)">Bulls 60</text>
+      <line class="lead" x1="252" y1="190" x2="330" y2="190"></line>
+      <text class="lbl-s" x="336" y="194">Close</text>
+      <text class="ttl" x="230" y="296" text-anchor="middle">Long upper wick, closes up</text>
+      <text class="lbl-s" x="230" y="320" text-anchor="middle">Green close — but sellers won the high ground</text>
+      <text class="lbl-s" x="230" y="340" text-anchor="middle" fill="var(--down)">Bears actually dominated</text>
+
+      <line x1="560" y1="60" x2="560" y2="110" class="s-dn" stroke-width="1.6"></line>
+      <line x1="560" y1="150" x2="560" y2="260" class="s-dn" stroke-width="1.6"></line>
+      <rect x="542" y="110" width="36" height="40" class="f-dn s-dn" stroke-width="1.8"></rect>
+      <path d="M 604 60 H 614 V 150 H 604" class="s-dn" stroke-width="1.5" fill="none"></path>
+      <path d="M 604 150 H 614 V 260 H 604" class="s-up" stroke-width="1.5" fill="none"></path>
+      <text class="lbl" x="624" y="109" fill="var(--down)">Bears 90</text>
+      <text class="lbl" x="624" y="209" fill="var(--up)">Bulls 110</text>
+      <line class="lead" x1="538" y1="150" x2="470" y2="150"></line>
+      <text class="lbl-s" x="464" y="154" text-anchor="end">Close</text>
+      <text class="ttl" x="560" y="296" text-anchor="middle">Long lower wick, closes down</text>
+      <text class="lbl-s" x="560" y="320" text-anchor="middle">Red close — but buyers absorbed the low</text>
+      <text class="lbl-s" x="560" y="340" text-anchor="middle" fill="var(--up)">Bulls actually dominated</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 1-2</span>The bracket lengths are the strengths. The left candle closes green, yet bear strength (140) dwarfs bull strength (60) — the distance price was hammered down from the high is what really happened that day. <b>Compute the strength first; look at the color second.</b></figcaption>
+  </figure>
+
+  <h3>1.3 A single candle only means something inside a trend</h3>
+  <p>One candle describes one day's battle. To <em>trade</em> it, you must put it back into context:</p>
+  <ul>
+    <li><strong>Candle agrees with the trend</strong>: the two "resonate," and continuation in the trend direction is the higher-probability outcome — the basis for adding to winners.</li>
+    <li><strong>Candle disagrees with the trend</strong>: first ask whether the trend structure is actually broken. A bear-dominated candle inside an uptrend is usually <em>a pause or a shakeout</em>; a bull-dominated candle inside a downtrend is usually <em>just a bounce</em>.</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 820 320" role="img" aria-label="Candle plus trend: one bearish candle inside an uptrend is usually a shakeout; one bullish candle inside a downtrend is usually just a bounce">
+      <text class="ttl" x="200" y="28" text-anchor="middle">One red candle in an uptrend</text>
+      <path d="M 58 250 L 336 96" stroke="var(--brass)" stroke-width="1.3" stroke-dasharray="6 5" fill="none" marker-end="url(#ar-br)"></path>
+      <g>
+        <line x1="70" y1="208" x2="70" y2="242" class="s-up"></line><rect x="62" y="215" width="16" height="20" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="105" y1="190" x2="105" y2="222" class="s-up"></line><rect x="97" y="196" width="16" height="19" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="140" y1="190" x2="140" y2="218" class="s-dn"></line><rect x="132" y="196" width="16" height="14" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="175" y1="174" x2="175" y2="216" class="s-up"></line><rect x="167" y="180" width="16" height="30" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="210" y1="154" x2="210" y2="186" class="s-up"></line><rect x="202" y="160" width="16" height="20" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="245" y1="138" x2="245" y2="166" class="s-up"></line><rect x="237" y="145" width="16" height="15" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="280" y1="120" x2="280" y2="150" class="s-up"></line><rect x="272" y="126" width="16" height="19" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="315" y1="102" x2="315" y2="132" class="s-up"></line><rect x="307" y="108" width="16" height="18" class="body-fill s-up" stroke-width="1.4"></rect>
+      </g>
+      <rect x="126" y="186" width="28" height="38" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"></rect>
+      <line class="lead" x1="140" y1="228" x2="140" y2="262"></line>
+      <text class="lbl-s" x="140" y="278" text-anchor="middle" fill="var(--accent)">Shakeout / continuation pause</text>
+      <text class="lbl-s" x="140" y="296" text-anchor="middle">Prior low intact → trend intact</text>
+
+      <text class="ttl" x="600" y="28" text-anchor="middle">One green candle in a downtrend</text>
+      <path d="M 460 96 L 736 254" stroke="var(--brass)" stroke-width="1.3" stroke-dasharray="6 5" fill="none" marker-end="url(#ar-br)"></path>
+      <g>
+        <line x1="470" y1="104" x2="470" y2="138" class="s-dn"></line><rect x="462" y="110" width="16" height="22" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="505" y1="126" x2="505" y2="158" class="s-dn"></line><rect x="497" y="132" width="16" height="20" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="540" y1="132" x2="540" y2="158" class="s-up"></line><rect x="532" y="138" width="16" height="14" class="body-fill s-up" stroke-width="1.4"></rect>
+        <line x1="575" y1="132" x2="575" y2="176" class="s-dn"></line><rect x="567" y="138" width="16" height="32" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="610" y1="164" x2="610" y2="196" class="s-dn"></line><rect x="602" y="170" width="16" height="20" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="645" y1="184" x2="645" y2="212" class="s-dn"></line><rect x="637" y="190" width="16" height="16" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="680" y1="200" x2="680" y2="230" class="s-dn"></line><rect x="672" y="206" width="16" height="18" class="f-dn s-dn" stroke-width="1.4"></rect>
+        <line x1="715" y1="218" x2="715" y2="248" class="s-dn"></line><rect x="707" y="224" width="16" height="18" class="f-dn s-dn" stroke-width="1.4"></rect>
+      </g>
+      <rect x="526" y="128" width="28" height="34" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"></rect>
+      <line class="lead" x1="540" y1="166" x2="540" y2="262"></line>
+      <text class="lbl-s" x="540" y="278" text-anchor="middle" fill="var(--accent)">A bounce, not a reversal</text>
+      <text class="lbl-s" x="540" y="296" text-anchor="middle">Prior high intact → trend intact</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 1-3</span>The same candle means opposite things in opposite trends. The deciding question is never the candle itself but <b>whether it broke the trend structure</b> — if an uptrend's previous swing low is still intact, the uptrend is still intact.</figcaption>
+  </figure>
+
+  <h3>1.4 Common candlestick patterns</h3>
+  <p>The second step is reading groups of candles. Patterns fall into five families: <strong>bottoming</strong> (hammer, morning star), <strong>topping</strong> (shooting star, evening star), <strong>bullish/bearish reversals</strong> (engulfing, harami), <strong>continuation</strong> (triangles, flags), and <strong>gaps</strong> (up-gaps, down-gaps).</p>
+
+  <figure>
+    <svg viewBox="0 0 900 320" role="img" aria-label="Four common candlestick patterns: hammer, shooting star, bullish engulfing, morning star">
+      <line class="gridline" x1="235" y1="45" x2="235" y2="255"></line>
+      <line class="gridline" x1="455" y1="45" x2="455" y2="255"></line>
+      <line class="gridline" x1="675" y1="45" x2="675" y2="255"></line>
+
+      <text class="ttl" x="125" y="30" text-anchor="middle">Hammer</text>
+      <line x1="70" y1="70" x2="70" y2="130" class="s-dn"></line><rect x="63" y="80" width="14" height="40" class="f-dn s-dn" stroke-width="1.3"></rect>
+      <line x1="105" y1="105" x2="105" y2="160" class="s-dn"></line><rect x="98" y="112" width="14" height="38" class="f-dn s-dn" stroke-width="1.3"></rect>
+      <line x1="140" y1="140" x2="140" y2="186" class="s-dn"></line><rect x="133" y="145" width="14" height="33" class="f-dn s-dn" stroke-width="1.3"></rect>
+      <line x1="178" y1="168" x2="178" y2="232" class="s-up" stroke-width="1.6"></line><rect x="170" y="172" width="16" height="10" class="body-fill s-up" stroke-width="1.6"></rect>
+      <line class="lead" x1="178" y1="238" x2="178" y2="252"></line>
+      <text class="lbl-s" x="125" y="278" text-anchor="middle" fill="var(--up)">Bottoming signal</text>
+      <text class="lbl-s" x="125" y="298" text-anchor="middle">End of a decline: small body, long lower wick</text>
+
+      <text class="ttl" x="345" y="30" text-anchor="middle">Shooting star</text>
+      <line x1="290" y1="150" x2="290" y2="205" class="s-up"></line><rect x="283" y="155" width="14" height="40" class="body-fill s-up" stroke-width="1.3"></rect>
+      <line x1="325" y1="120" x2="325" y2="168" class="s-up"></line><rect x="318" y="125" width="14" height="35" class="body-fill s-up" stroke-width="1.3"></rect>
+      <line x1="360" y1="90" x2="360" y2="132" class="s-up"></line><rect x="353" y="95" width="14" height="31" class="body-fill s-up" stroke-width="1.3"></rect>
+      <line x1="398" y1="52" x2="398" y2="112" class="s-dn" stroke-width="1.6"></line><rect x="390" y="98" width="16" height="10" class="f-dn s-dn" stroke-width="1.6"></rect>
+      <text class="lbl-s" x="345" y="278" text-anchor="middle" fill="var(--down)">Topping signal</text>
+      <text class="lbl-s" x="345" y="298" text-anchor="middle">End of a rally: small body, long upper wick</text>
+
+      <text class="ttl" x="565" y="30" text-anchor="middle">Bullish engulfing</text>
+      <line x1="505" y1="95" x2="505" y2="150" class="s-dn"></line><rect x="498" y="100" width="14" height="42" class="f-dn s-dn" stroke-width="1.3"></rect>
+      <line x1="545" y1="120" x2="545" y2="178" class="s-dn"></line><rect x="536" y="128" width="18" height="42" class="f-dn s-dn" stroke-width="1.3"></rect>
+      <line x1="595" y1="105" x2="595" y2="188" class="s-up" stroke-width="1.6"></line><rect x="582" y="112" width="26" height="70" class="body-fill s-up" stroke-width="1.8"></rect>
+      <rect x="530" y="122" width="84" height="66" fill="none" stroke="var(--accent)" stroke-width="1.3" stroke-dasharray="4 3"></rect>
+      <text class="lbl-s" x="565" y="278" text-anchor="middle" fill="var(--up)">Bullish reversal</text>
+      <text class="lbl-s" x="565" y="298" text-anchor="middle">Big green body swallows the prior red body</text>
+
+      <text class="ttl" x="785" y="30" text-anchor="middle">Morning star</text>
+      <line x1="730" y1="88" x2="730" y2="172" class="s-dn"></line><rect x="722" y="95" width="16" height="70" class="f-dn s-dn" stroke-width="1.4"></rect>
+      <line x1="785" y1="180" x2="785" y2="212" class="s-dn"></line><rect x="778" y="190" width="14" height="12" class="f-dn s-dn" stroke-width="1.4"></rect>
+      <line x1="840" y1="86" x2="840" y2="178" class="s-up" stroke-width="1.6"></line><rect x="832" y="92" width="16" height="72" class="body-fill s-up" stroke-width="1.6"></rect>
+      <line class="lead" x1="700" y1="176" x2="870" y2="176"></line>
+      <text class="num-s" x="700" y="170" fill="var(--brass)">GAP</text>
+      <text class="lbl-s" x="785" y="278" text-anchor="middle" fill="var(--up)">Bottoming reversal</text>
+      <text class="lbl-s" x="785" y="298" text-anchor="middle">Big red → gapped small body → big green</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 1-4</span>The four most-used patterns. What actually matters when studying combinations is three things: <b>how neighboring candles contain each other, how bullish/bearish flips, and whether gaps appear</b> — these decide the strength of a signal. Location matters just as much: the same hammer is a bottoming signal at the end of a decline and means nothing halfway down a hill.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <span class="h mono">COMMON MISTAKE</span>
+    <p>The classic beginner error is <strong>memorizing dozens of pattern names while ignoring where the pattern occurs</strong>. Every bottoming pattern requires a preceding decline; every topping pattern requires a preceding rally. A pattern divorced from location is a lab result divorced from the patient's history.</p>
+  </div>
+</section>
+
+<section id="c2" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">LADDER 02 · THE TREND SMOOTHER</span><span class="goal">Goal: see direction, support, and resistance at a glance</span></div>
+    <h2>Moving averages — grinding out the noise</h2>
+  </div>
+
+  <p>Individual candles jump around; watch too many and the noise carries you away. The moving average (<strong>MA</strong>) does something humble: add up the last N closes, divide by N, plot one such point per day, connect the dots.</p>
+  <p>That line is <em>the market's average cost over the period</em>. Everyone who bought during those N days paid, on average, that price — which is why MAs so often act as support or resistance: when price returns to the MA, it returns to the crowd's cost basis.</p>
+
+  <figure>
+    <svg viewBox="0 0 820 330" role="img" aria-label="How a 10-day moving average is computed: average the last ten closes to get one point on the MA line">
+      <polyline points="60,240 110,225 160,250 210,215 260,200 310,210 360,190 410,175 460,185 510,165 560,150 610,158 660,140 710,130" fill="none" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="3 3"></polyline>
+      <g fill="var(--ink-3)">
+        <circle cx="60" cy="240" r="3.5"></circle><circle cx="110" cy="225" r="3.5"></circle><circle cx="160" cy="250" r="3.5"></circle>
+        <circle cx="210" cy="215" r="3.5"></circle><circle cx="260" cy="200" r="3.5"></circle><circle cx="310" cy="210" r="3.5"></circle>
+        <circle cx="360" cy="190" r="3.5"></circle><circle cx="410" cy="175" r="3.5"></circle><circle cx="460" cy="185" r="3.5"></circle>
+        <circle cx="510" cy="165" r="3.5"></circle><circle cx="560" cy="150" r="3.5"></circle><circle cx="610" cy="158" r="3.5"></circle>
+        <circle cx="660" cy="140" r="3.5"></circle><circle cx="710" cy="130" r="3.5"></circle>
+      </g>
+      <polyline points="510,206 560,197 610,190 660,179 710,170" fill="none" stroke="var(--accent)" stroke-width="2.4"></polyline>
+      <g class="f-ac"><circle cx="510" cy="206" r="4.5"></circle><circle cx="710" cy="170" r="4.5"></circle></g>
+      <text class="lbl" x="722" y="174" fill="var(--accent)">MA10</text>
+      <text class="lbl-s" x="722" y="134">Closes</text>
+      <path d="M 60 272 V 282 H 510 V 272" fill="none" stroke="var(--brass)" stroke-width="1.3"></path>
+      <text class="lbl-s" x="285" y="302" text-anchor="middle" fill="var(--brass)">Last 10 closes</text>
+      <path d="M 285 268 C 340 240, 420 215, 500 208" fill="none" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar-br)"></path>
+      <text class="num-s" x="380" y="252" fill="var(--brass)">average them → one point</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 2-1</span>Every point of the MA10 is the mean of the ten closes to its left, <b>so the MA always lags price</b> — its weakness at turning points (slow to react) and its strength everywhere else (a single wild day cannot fool it). Longer period, smoother line, more lag.</figcaption>
+  </figure>
+
+  <h3>2.1 Choosing your periods</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Class</th><th>Period</th><th>Nickname</th><th>Primary use</th></tr></thead>
+      <tbody>
+        <tr><td>Short</td><td class="n">MA5 / MA10</td><td>weekly / two-week line</td><td>Entry and exit timing for swing trades</td></tr>
+        <tr><td>Medium</td><td class="n">MA20 / MA30</td><td>monthly line</td><td>Health check for the medium trend; the holding lifeline</td></tr>
+        <tr><td>Long</td><td class="n">MA60 / MA120 / MA250</td><td>quarterly / half-year / yearly</td><td>Bull–bear regime, big-picture direction, institutional cost proxy</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lbl-s" style="color:var(--ink-3);font-size:13.5px">A beginner does not need eight lines on the chart. <strong>Three suffice</strong>: one short (MA5 or MA10) for entries, one medium (MA20) for holding, one long (MA60) for direction.</p>
+
+  <h3>2.2 Golden cross and death cross</h3>
+  <p>A shorter MA crossing <strong>up</strong> through a longer MA is a <strong>golden cross</strong> — conventionally a buy signal. Crossing <strong>down</strong> is a <strong>death cross</strong> — conventionally a sell.</p>
+  <p>The routinely forgotten precondition: <em>a golden cross only counts when both MAs are flat or rising; a death cross only counts when both are flat or falling</em>. A "golden cross" printed while both lines still plunge is just a bounce inside a decline, not a buy point.</p>
+
+  <figure>
+    <svg viewBox="0 0 820 330" role="img" aria-label="Golden cross and death cross: short MA crossing above the long MA is a buy signal; crossing below is a sell signal">
+      <text class="ttl" x="215" y="28" text-anchor="middle">Golden cross</text>
+      <path d="M 50 195 C 110 215, 160 220, 215 216 S 320 190, 380 170" fill="none" stroke="var(--brass)" stroke-width="2.2"></path>
+      <path d="M 50 250 C 110 245, 150 232, 200 214 S 300 150, 380 110" fill="none" stroke="var(--accent)" stroke-width="2.2"></path>
+      <circle cx="207" cy="215" r="7" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <path d="M 207 268 V 238" stroke="var(--up)" stroke-width="1.4" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="lbl" x="207" y="290" text-anchor="middle" fill="var(--up)">Golden cross → consider buying</text>
+      <text class="lbl-s" x="388" y="114" fill="var(--accent)">MA5</text>
+      <text class="lbl-s" x="388" y="174" fill="var(--brass)">MA20</text>
+      <text class="lbl-s" x="215" y="312" text-anchor="middle">Precondition: both lines flat or rising</text>
+
+      <text class="ttl" x="605" y="28" text-anchor="middle">Death cross</text>
+      <path d="M 440 150 C 500 130, 550 128, 605 133 S 710 162, 770 180" fill="none" stroke="var(--brass)" stroke-width="2.2"></path>
+      <path d="M 440 105 C 500 112, 550 125, 600 136 S 700 200, 770 240" fill="none" stroke="var(--accent)" stroke-width="2.2"></path>
+      <circle cx="597" cy="134" r="7" fill="none" stroke="var(--down)" stroke-width="2"></circle>
+      <path d="M 597 154 V 268" stroke="var(--down)" stroke-width="1.4" fill="none" marker-end="url(#ar-dn)"></path>
+      <text class="lbl" x="597" y="290" text-anchor="middle" fill="var(--down)">Death cross → consider selling</text>
+      <text class="lbl-s" x="778" y="244" fill="var(--accent)">MA5</text>
+      <text class="lbl-s" x="778" y="184" fill="var(--brass)">MA20</text>
+      <text class="lbl-s" x="605" y="312" text-anchor="middle">Precondition: both lines flat or falling</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 2-2</span>The crossing itself is not the signal — <b>the posture of the two MAs at the moment of crossing is</b>. A cross printed while both lines dive steeply carries far less weight than one printed after both have flattened.</figcaption>
+  </figure>
+
+  <h3>2.3 Bullish and bearish alignment</h3>
+  <p>When short, medium, and long MAs stack <strong>top-to-bottom in that order</strong> (MA5 &gt; MA10 &gt; MA20 &gt; MA60), all rising, that is <strong>bullish alignment</strong> — the bulls own the field; lean long and hold. The mirror image (long on top, all falling) is <strong>bearish alignment</strong> — stand aside or lean short.</p>
+
+  <figure>
+    <svg viewBox="0 0 880 310" role="img" aria-label="Bullish and bearish alignment: moving averages stacked by period, all running in the same direction">
+      <text class="ttl" x="215" y="28" text-anchor="middle" fill="var(--up)">Bullish alignment</text>
+      <line x1="60" y1="210" x2="370" y2="90" stroke="var(--up)" stroke-width="2.2"></line>
+      <line x1="60" y1="228" x2="370" y2="116" stroke="var(--brass)" stroke-width="2"></line>
+      <line x1="60" y1="244" x2="370" y2="142" stroke="var(--accent)" stroke-width="2"></line>
+      <line x1="60" y1="258" x2="370" y2="172" stroke="var(--ink-3)" stroke-width="1.8"></line>
+      <text class="num-s" x="378" y="94" fill="var(--up)">MA5</text>
+      <text class="num-s" x="378" y="120" fill="var(--brass)">MA10</text>
+      <text class="num-s" x="378" y="146" fill="var(--accent)">MA20</text>
+      <text class="num-s" x="378" y="176" fill="var(--ink-3)">MA60</text>
+      <text class="lbl-s" x="215" y="272" text-anchor="middle">Short on top, long on bottom, all rising</text>
+      <text class="lbl-s" x="215" y="292" text-anchor="middle" fill="var(--up)">Hold; pullbacks to the MAs are add points</text>
+
+      <text class="ttl" x="625" y="28" text-anchor="middle" fill="var(--down)">Bearish alignment</text>
+      <line x1="470" y1="110" x2="780" y2="190" stroke="var(--ink-3)" stroke-width="1.8"></line>
+      <line x1="470" y1="126" x2="780" y2="212" stroke="var(--accent)" stroke-width="2"></line>
+      <line x1="470" y1="142" x2="780" y2="234" stroke="var(--brass)" stroke-width="2"></line>
+      <line x1="470" y1="158" x2="780" y2="256" stroke="var(--down)" stroke-width="2.2"></line>
+      <text class="num-s" x="788" y="194" fill="var(--ink-3)">MA60</text>
+      <text class="num-s" x="788" y="216" fill="var(--accent)">MA20</text>
+      <text class="num-s" x="788" y="238" fill="var(--brass)">MA10</text>
+      <text class="num-s" x="788" y="260" fill="var(--down)">MA5</text>
+      <text class="lbl-s" x="625" y="286" text-anchor="middle">Long on top, short on bottom, all falling</text>
+      <text class="lbl-s" x="625" y="306" text-anchor="middle" fill="var(--down)">Stay out; bounces into the MAs are exits</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 2-3</span>The <b>order</b> of the stack says who is in charge; the <b>slope</b> says how decisively. Both must hold for a true alignment — order without slope (lines running flat) is a range, not a trend.</figcaption>
+  </figure>
+
+  <h3>2.4 MA convergence — the silence before the move</h3>
+  <p>When two or more MAs braid around each other with no clear direction, they are <strong>converged</strong>. Convergence means cost bases across timeframes have equalized and disagreement is minimal — a state that never lasts. <em>Convergence is typically resolved by a directional breakout.</em></p>
+
+  <figure>
+    <svg viewBox="0 0 820 320" role="img" aria-label="Converged moving averages resolving into a directional breakout">
+      <rect x="60" y="158" width="320" height="42" fill="var(--accent-soft)" stroke="var(--line)" stroke-dasharray="4 3"></rect>
+      <path d="M 60 176 C 110 168, 150 188, 200 174 S 300 186, 380 178" fill="none" stroke="var(--up)" stroke-width="1.8"></path>
+      <path d="M 60 182 C 110 190, 150 170, 200 184 S 300 172, 380 181" fill="none" stroke="var(--brass)" stroke-width="1.8"></path>
+      <path d="M 60 172 C 120 184, 160 176, 210 180 S 310 180, 380 184" fill="none" stroke="var(--accent)" stroke-width="1.8"></path>
+      <text class="lbl-s" x="220" y="146" text-anchor="middle" fill="var(--accent)">Convergence: no direction, minimal disagreement</text>
+      <path d="M 380 178 C 470 160, 560 120, 760 78" fill="none" stroke="var(--up)" stroke-width="2.2"></path>
+      <path d="M 380 181 C 470 172, 560 142, 760 108" fill="none" stroke="var(--brass)" stroke-width="2"></path>
+      <path d="M 380 184 C 470 180, 560 162, 760 136" fill="none" stroke="var(--accent)" stroke-width="2"></path>
+      <text class="num-s" x="768" y="82" fill="var(--up)">MA5</text>
+      <text class="num-s" x="768" y="112" fill="var(--brass)">MA10</text>
+      <text class="num-s" x="768" y="140" fill="var(--accent)">MA20</text>
+      <line x1="380" y1="60" x2="380" y2="250" class="axis" stroke-dasharray="5 4"></line>
+      <path d="M 400 230 V 130" stroke="var(--up)" stroke-width="1.6" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="lbl" x="412" y="216" fill="var(--up)">Directional breakout</text>
+      <text class="lbl-s" x="412" y="238">On volume → bullish alignment unfolds</text>
+      <text class="lbl-s" x="220" y="276" text-anchor="middle">During convergence: wait, don't guess</text>
+      <text class="lbl-s" x="560" y="276" text-anchor="middle">After the break: trade in its direction</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 2-4</span>The right move during convergence is <b>waiting, not guessing</b>. Convergence says "a big move is coming"; it never says which way. Entering after the breakout prints — with volume behind it — beats front-running it by a wide margin over time.</figcaption>
+  </figure>
+
+  <h3>2.5 Two quantitative gauges: slope and bias</h3>
+  <div class="cards">
+    <div class="card">
+      <span class="k mono">SLOPE</span>
+      <b>MA slope</b>
+      <p>The angle between an MA and the horizontal. Empirically, trends holding a <strong>30°–45°</strong> slope sustain best: flatter lacks momentum, steeper (&gt;60°) is borrowed from the future and prone to sharp snap-backs.</p>
+    </div>
+    <div class="card">
+      <span class="k mono">BIAS</span>
+      <b>Bias ratio</b>
+      <p>Price's percentage distance from an MA: <span class="mono">BIAS = (Close − MA) ÷ MA × 100%</span>. <strong>The wider the bias, the likelier the snap back to the MA</strong> — large positive bias warns against chasing; large negative bias hints at a bounce.</p>
+    </div>
+  </div>
+
+  <h3>2.6 Granville's eight rules</h3>
+  <p>Granville's rules reduce "price versus its MA" to eight situations — four buys and four sells. It is the classic, most learnable MA playbook.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 430" role="img" aria-label="Granville's eight rules: four buy points and four sell points plotted on one moving average">
+      <path d="M 60 310 C 150 305, 220 270, 300 215 C 380 160, 450 130, 540 135 C 620 140, 680 190, 740 250 C 790 300, 820 320, 860 332" fill="none" stroke="var(--brass)" stroke-width="2.6"></path>
+      <text class="lbl-s" x="866" y="336" text-anchor="end" fill="var(--brass)" dy="18">MA</text>
+      <polyline points="60,350 130,335 190,300 250,242 300,205 330,218 355,182 400,150 450,150 490,110 520,70 560,105 600,155 630,200 665,172 700,215 730,238 765,300 800,375 850,340" fill="none" stroke="var(--ink-3)" stroke-width="1.3"></polyline>
+      <g fill="var(--up)">
+        <circle cx="250" cy="242" r="5.5"></circle><circle cx="355" cy="182" r="5.5"></circle>
+        <circle cx="450" cy="150" r="5.5"></circle><circle cx="800" cy="375" r="5.5"></circle>
+      </g>
+      <g fill="var(--down)">
+        <circle cx="520" cy="70" r="5.5"></circle><circle cx="600" cy="155" r="5.5"></circle>
+        <circle cx="665" cy="172" r="5.5"></circle><circle cx="730" cy="238" r="5.5"></circle>
+      </g>
+      <g class="num" fill="var(--up)">
+        <text x="234" y="268" text-anchor="middle">B1</text><text x="350" y="212" text-anchor="middle">B2</text>
+        <text x="450" y="180" text-anchor="middle">B3</text><text x="800" y="400" text-anchor="middle">B4</text>
+      </g>
+      <g class="num" fill="var(--down)">
+        <text x="520" y="56" text-anchor="middle">S4</text><text x="592" y="140" text-anchor="end">S1</text>
+        <text x="672" y="156">S2</text><text x="742" y="230">S3</text>
+      </g>
+      <text class="lbl-s" x="60" y="366">Price</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 2-5</span>All eight points live on a single price path. <b>B4 and S4 are the "bias" signals</b> — snap-backs from an over-extended distance; the other six are "position" signals — how price crosses and re-crosses the MA.</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card" style="border-left:3px solid var(--up)">
+      <span class="k mono" style="color:var(--up)">BUY B1</span><b>First cross above</b>
+      <p>The MA turns from falling to flat or rising, and price crosses up through it for the first time. Possible trend reversal — the most important first buy.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--up)">
+      <span class="k mono" style="color:var(--up)">BUY B2</span><b>Dip below, reclaim</b>
+      <p>In an uptrend price slips under the MA while the MA keeps rising, then reclaims it.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--up)">
+      <span class="k mono" style="color:var(--up)">BUY B3</span><b>Pullback holds the MA</b>
+      <p>Price falls back to the MA, touches it, and turns up without a real break. The most comfortable with-trend add point.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--up)">
+      <span class="k mono" style="color:var(--up)">BUY B4</span><b>Deep negative bias + bullish pattern</b>
+      <p>Price stretched far below the MA (oversold), with a hammer or bullish engulfing printing. A bounce trade — keep it small.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--down)">
+      <span class="k mono" style="color:var(--down)">SELL S1</span><b>First break below</b>
+      <p>After a big rally the MA flattens or rolls over and price breaks down through it. The first sell.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--down)">
+      <span class="k mono" style="color:var(--down)">SELL S2</span><b>Pop above, fail again</b>
+      <p>In a downtrend price briefly stands above the MA while the MA keeps falling, then loses it again.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--down)">
+      <span class="k mono" style="color:var(--down)">SELL S3</span><b>Bounce rejected at the MA</b>
+      <p>Price rallies from below into the MA and gets rejected. The textbook trim point in a downtrend.</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--down)">
+      <span class="k mono" style="color:var(--down)">SELL S4</span><b>Deep positive bias + bearish pattern</b>
+      <p>Price stretched far above the MA (overbought), with a shooting star or bearish engulfing printing. A take-profit signal.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="h mono">PRACTICAL NOTE</span>
+    <p>You do not need all eight. Beginners should trade only <strong>B1, B3, S1, S3</strong> — the four with the clearest direction. B2/S2 live in choppy territory and B4/S4 are counter-trend; both demand more experience and stricter sizing.</p>
+  </div>
+</section>
+
+<section id="c3" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">LADDER 03 · THE MAP OF THE MARKET</span><span class="goal">Goal: mark the price levels that matter</span></div>
+    <h2>Trendlines and support/resistance — drawing the map</h2>
+  </div>
+
+  <p>Moving averages give you direction, but not <em>where to buy or where to admit you're wrong</em>. Trendlines and support/resistance fill that gap — they turn a noisy chart into a map with marked borders.</p>
+
+  <h3>3.1 There are only three trends</h3>
+  <p>Judging trend needs no indicator at all — only <strong>the relative position of highs and lows</strong>:</p>
+  <ul>
+    <li><strong>Uptrend</strong>: higher highs and higher lows</li>
+    <li><strong>Downtrend</strong>: lower highs and lower lows</li>
+    <li><strong>Range</strong>: highs and lows oscillating inside a band</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 900 310" role="img" aria-label="The three trend types: uptrend with rising highs and lows, downtrend with falling highs and lows, and a sideways range">
+      <text class="ttl" x="160" y="28" text-anchor="middle">Uptrend</text>
+      <polyline points="40,230 80,170 120,200 160,130 200,160 240,90 275,120" fill="none" stroke="var(--ink-2)" stroke-width="1.8"></polyline>
+      <g class="f-up"><circle cx="80" cy="170" r="4"></circle><circle cx="160" cy="130" r="4"></circle><circle cx="240" cy="90" r="4"></circle></g>
+      <g fill="var(--accent)"><circle cx="40" cy="230" r="4"></circle><circle cx="120" cy="200" r="4"></circle><circle cx="200" cy="160" r="4"></circle></g>
+      <line x1="80" y1="170" x2="240" y2="90" stroke="var(--up)" stroke-width="1" stroke-dasharray="3 3"></line>
+      <line x1="40" y1="230" x2="200" y2="160" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3"></line>
+      <text class="lbl-s" x="160" y="266" text-anchor="middle" fill="var(--up)">Higher highs ↗</text>
+      <text class="lbl-s" x="160" y="286" text-anchor="middle" fill="var(--accent)">Higher lows too ↗</text>
+
+      <text class="ttl" x="440" y="28" text-anchor="middle">Downtrend</text>
+      <polyline points="320,90 360,150 400,120 440,190 480,160 520,230 555,205" fill="none" stroke="var(--ink-2)" stroke-width="1.8"></polyline>
+      <g class="f-up"><circle cx="320" cy="90" r="4"></circle><circle cx="400" cy="120" r="4"></circle><circle cx="480" cy="160" r="4"></circle></g>
+      <g fill="var(--accent)"><circle cx="360" cy="150" r="4"></circle><circle cx="440" cy="190" r="4"></circle><circle cx="520" cy="230" r="4"></circle></g>
+      <line x1="320" y1="90" x2="480" y2="160" stroke="var(--up)" stroke-width="1" stroke-dasharray="3 3"></line>
+      <line x1="360" y1="150" x2="520" y2="230" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3"></line>
+      <text class="lbl-s" x="440" y="266" text-anchor="middle" fill="var(--up)">Lower highs ↘</text>
+      <text class="lbl-s" x="440" y="286" text-anchor="middle" fill="var(--accent)">Lower lows too ↘</text>
+
+      <text class="ttl" x="730" y="28" text-anchor="middle">Sideways range</text>
+      <line x1="595" y1="128" x2="865" y2="128" stroke="var(--up)" stroke-width="1.2" stroke-dasharray="4 3"></line>
+      <line x1="595" y1="195" x2="865" y2="195" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="4 3"></line>
+      <polyline points="600,190 640,130 680,195 720,128 760,192 800,132 855,190" fill="none" stroke="var(--ink-2)" stroke-width="1.8"></polyline>
+      <text class="lbl-s" x="730" y="266" text-anchor="middle">Highs and lows going nowhere</text>
+      <text class="lbl-s" x="730" y="286" text-anchor="middle">Fade the edges, or simply sit out</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 3-1</span>Trend judgment is just these two strings of dots. <b>As long as lows keep rising, the uptrend is not broken</b> — a few red candles in between mean nothing. Only when a pullback takes out the previous swing low does the first genuine alarm ring.</figcaption>
+  </figure>
+
+  <h3>3.2 How to draw a trendline</h3>
+  <p>One rule covers it: <strong>connect the lows in an uptrend, the highs in a downtrend</strong>.</p>
+  <ul>
+    <li><strong>Rising trendline (support)</strong>: connect <em>two or more swing lows</em> of an advancing leg and extend right — an upward-sloping line. Pullbacks into it tend to find support.</li>
+    <li><strong>Falling trendline (resistance)</strong>: connect <em>two or more swing highs</em> of a declining leg and extend right. Bounces into it tend to stall.</li>
+  </ul>
+  <p>The third point is what matters: two points define a line, <strong>the third touch confirms it</strong>. A two-point trendline is something anyone can draw anywhere — it proves nothing yet.</p>
+
+  <figure>
+    <svg viewBox="0 0 880 340" role="img" aria-label="Drawing trendlines: a rising line connects two lows and is confirmed by a third; a falling line connects two highs">
+      <text class="ttl" x="220" y="28" text-anchor="middle">Rising trendline = connect lows</text>
+      <polyline points="60,270 110,200 155,235 215,150 265,195 330,110 370,148" fill="none" stroke="var(--ink-2)" stroke-width="1.8"></polyline>
+      <line x1="60" y1="270" x2="155" y2="235" stroke="var(--accent)" stroke-width="2.4"></line>
+      <line x1="155" y1="235" x2="400" y2="145" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="6 4"></line>
+      <g fill="var(--accent)"><circle cx="60" cy="270" r="5"></circle><circle cx="155" cy="235" r="5"></circle></g>
+      <circle cx="265" cy="195" r="7" fill="none" stroke="var(--up)" stroke-width="2.2"></circle>
+      <text class="num-s" x="52" y="290" text-anchor="middle" fill="var(--accent)">Low 1</text>
+      <text class="num-s" x="150" y="256" text-anchor="middle" fill="var(--accent)">Low 2</text>
+      <text class="lbl-s" x="272" y="222" fill="var(--up)">Low 3 → confirmed</text>
+      <text class="lbl-s" x="220" y="312" text-anchor="middle">Pullbacks holding this line = uptrend alive</text>
+
+      <text class="ttl" x="660" y="28" text-anchor="middle">Falling trendline = connect highs</text>
+      <polyline points="480,150 500,110 545,175 600,150 650,215 700,190 760,250 820,228" fill="none" stroke="var(--ink-2)" stroke-width="1.8"></polyline>
+      <line x1="500" y1="110" x2="600" y2="150" stroke="var(--brass)" stroke-width="2.4"></line>
+      <line x1="600" y1="150" x2="830" y2="242" stroke="var(--brass)" stroke-width="1.6" stroke-dasharray="6 4"></line>
+      <g fill="var(--brass)"><circle cx="500" cy="110" r="5"></circle><circle cx="600" cy="150" r="5"></circle></g>
+      <circle cx="700" cy="190" r="7" fill="none" stroke="var(--down)" stroke-width="2.2"></circle>
+      <text class="num-s" x="496" y="98" text-anchor="middle" fill="var(--brass)">High 1</text>
+      <text class="num-s" x="600" y="138" text-anchor="middle" fill="var(--brass)">High 2</text>
+      <text class="lbl-s" x="708" y="180" fill="var(--down)">High 3 → confirmed</text>
+      <text class="lbl-s" x="660" y="312" text-anchor="middle">Bounces rejected here = downtrend alive</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 3-2</span>The solid segment is "two points define a line"; the dashed part is the rightward extension — <b>and the extension is where the trading value lives</b>, because it projects future support/resistance. When the third touch (circled) lands on the extension, the market itself has validated your line.</figcaption>
+  </figure>
+
+  <div class="note">
+    <span class="h mono">DRAWING RULES</span>
+    <p><strong>Four rules for drawing:</strong> ① no candle body may cut through the line between its anchor points; ② at high price levels prefer a <strong>log-scale chart</strong>, otherwise equal percentage moves look stretched and tilt the line; ③ the longer the timeframe (weekly &gt; daily &gt; hourly), the more reliable the line; ④ a slope near <strong>45°</strong> is healthiest — very steep lines break soon.</p>
+  </div>
+
+  <h3>3.3 Support and resistance</h3>
+  <p><strong>Support</strong> is a price area where a decline tends to stall and stabilize — the "floor," a zone of waiting demand. <strong>Resistance</strong> is where a rally tends to stall and roll over — the "ceiling," a zone of waiting supply.</p>
+  <p>The core logic in one line: <em>a level that price repeatedly fails to get through becomes, by that very fact, an obstacle</em>.</p>
+
+  <div class="cards">
+    <div class="card"><span class="k mono">RULE 01</span><b>It's a zone, not a tick</b><p>Support/resistance is always a price <strong>band</strong>. Expecting exact reversals at an exact decimal only gets your stops wicked out.</p></div>
+    <div class="card"><span class="k mono">RULE 02</span><b>Break above resistance → likely to run</b><p>A valid break means the supply parked there has been absorbed; price tends to continue higher.</p></div>
+    <div class="card"><span class="k mono">RULE 03</span><b>Break below support → likely to fall</b><p>A valid break of support that <strong>holds for 3+ days</strong> without being reclaimed is a serious reversal warning.</p></div>
+  </div>
+
+  <h3>3.4 Role reversal: support ↔ resistance</h3>
+  <p>The single most useful principle in this chapter: <strong>broken support becomes resistance; broken resistance becomes support</strong>.</p>
+  <p>The reason is human: everyone who bought at resistance and got trapped is desperate to break even — their selling caps the next rally there (resistance). Once a real breakout absorbs them, the same shelf becomes the cost basis of fresh buyers (support).</p>
+
+  <figure>
+    <svg viewBox="0 0 860 340" role="img" aria-label="Role reversal: repeated failures at a level make it resistance; after the breakout, the same level acts as support on the retest">
+      <rect x="40" y="170" width="800" height="18" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1" stroke-dasharray="5 4"></rect>
+      <polyline points="50,280 110,190 150,250 210,186 260,255 320,178 370,240 430,176 480,146 540,182 590,118 650,178 700,88 780,58" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <text class="lbl-s" x="46" y="164" fill="var(--accent)">The key price band</text>
+      <path d="M 150 300 C 180 280, 200 230, 208 200" fill="none" stroke="var(--down)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar-dn)"></path>
+      <text class="lbl" x="146" y="318" text-anchor="middle" fill="var(--down)">Resistance: three failed attacks</text>
+      <circle cx="480" cy="146" r="7" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <text class="lbl" x="480" y="126" text-anchor="middle" fill="var(--up)">Breakout on volume</text>
+      <path d="M 640 300 C 650 260, 650 220, 650 196" fill="none" stroke="var(--up)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar-up)"></path>
+      <text class="lbl" x="648" y="318" text-anchor="middle" fill="var(--up)">Support: retest holds, next leg up</text>
+      <circle cx="650" cy="178" r="7" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+    </svg>
+    <figcaption><span class="fig-num">Fig 3-3</span>The same horizontal band is the <b>ceiling</b> before the break and the <b>floor</b> after it. The first retest after a breakout (right circle) offers one of the best risk-reward entries available: the stop (back inside the band) sits close, while the upside has just opened.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <span class="h mono">REAL VS FALSE BREAKOUTS</span>
+    <p>How to tell a valid break from a fake-out — three filters, act only when at least two pass: <strong>① Volume</strong> — breakout-day volume clearly expands (≥1.5× the 5-day average); <strong>② Magnitude</strong> — the close clears the level by 3%+, not merely leans on it; <strong>③ Time</strong> — price holds beyond the level for <strong>2–3 consecutive sessions</strong>. A "breakout" that passes none is usually bait.</p>
+  </div>
+</section>
+
+<section id="c4" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">LADDER 04 · THE MARKET'S RHYTHM</span><span class="goal">Goal: know roughly where in the cycle you stand</span></div>
+    <h2>Elliott Wave — five up, three down</h2>
+  </div>
+
+  <p>Wave theory was proposed by R. N. Elliott in the 1930s. It has three pillars: <strong>the shape of the waves, the proportions between waves, and the time between them</strong> — with <em>shape mattering most</em>, proportion second, time least.</p>
+  <p>And the mathematics behind those proportions is exactly the Fibonacci sequence of the next chapter — which is why these two chapters must be studied together.</p>
+
+  <h3>4.1 The eight-wave cycle</h3>
+  <p>A complete price cycle contains <strong>eight waves</strong>: five <strong>impulse waves</strong> with the primary direction (labeled 1–5) and three <strong>corrective waves</strong> against it (labeled A, B, C). When all eight complete, one cycle ends and the next begins.</p>
+
+  <figure>
+    <svg viewBox="0 0 880 400" role="img" aria-label="The Elliott eight-wave cycle: impulse waves 1 to 5 rising, corrective waves A, B, C falling">
+      <line class="gridline" x1="470" y1="50" x2="470" y2="330"></line>
+      <text class="lbl" x="265" y="42" text-anchor="middle" fill="var(--up)">Impulse · 5 waves</text>
+      <text class="lbl" x="655" y="42" text-anchor="middle" fill="var(--down)">Correction · 3 waves</text>
+      <polyline points="60,340 140,250 190,295 330,110 390,175 470,90" fill="none" stroke="var(--up)" stroke-width="2.6"></polyline>
+      <polyline points="470,90 560,190 630,140 740,250" fill="none" stroke="var(--down)" stroke-width="2.6"></polyline>
+      <g fill="var(--ink)" class="num" font-size="14">
+        <text x="146" y="238">1</text><text x="192" y="316">2</text><text x="336" y="98">3</text>
+        <text x="394" y="196">4</text><text x="476" y="78">5</text>
+      </g>
+      <g fill="var(--ink)" class="num" font-size="14">
+        <text x="566" y="210">A</text><text x="634" y="128">B</text><text x="748" y="266">C</text>
+      </g>
+      <g fill="var(--ink-3)">
+        <circle cx="140" cy="250" r="3.5"></circle><circle cx="190" cy="295" r="3.5"></circle><circle cx="330" cy="110" r="3.5"></circle>
+        <circle cx="390" cy="175" r="3.5"></circle><circle cx="470" cy="90" r="3.5"></circle><circle cx="560" cy="190" r="3.5"></circle>
+        <circle cx="630" cy="140" r="3.5"></circle><circle cx="740" cy="250" r="3.5"></circle>
+      </g>
+      <line x1="40" y1="340" x2="800" y2="340" class="lead"></line>
+      <text class="lbl-s" x="40" y="360">Cycle start</text>
+      <circle cx="60" cy="340" r="4" fill="var(--brass)"></circle>
+      <text class="lbl-s" x="248" y="150" text-anchor="middle" fill="var(--up)">Wave 3: usually the strongest</text>
+      <path d="M 248 158 C 268 176, 296 152, 322 122" fill="none" stroke="var(--up)" stroke-width="1.1" stroke-dasharray="4 3" marker-end="url(#ar-up)"></path>
+      <text class="lbl-s" x="655" y="300" text-anchor="middle">Wave C ends → next 8-wave cycle begins</text>
+      <path d="M 748 262 C 780 290, 800 310, 820 322" fill="none" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ar-br)"></path>
+    </svg>
+    <figcaption><span class="fig-num">Fig 4-1</span>Within the five impulse waves, <b>1, 3, 5 rise (the odd waves) while 2 and 4 correct (the even waves)</b>. Wave 3 is usually the most explosive and often the longest — if you only want to catch one leg, wave 3 offers the best value for effort.</figcaption>
+  </figure>
+
+  <h3>4.2 Four basic properties of waves</h3>
+  <ul>
+    <li>Price <strong>alternates between advance and decline</strong> — the market's basic breathing.</li>
+    <li>Impulse and correction are the two elementary forms; every other shape is a combination of them.</li>
+    <li><strong>Duration does not change form</strong> — a wave may take three days or three years; its structure is invariant.</li>
+    <li>Waves are <strong>self-similar</strong>: each wave subdivides into smaller waves. A daily-chart wave 3 is itself a full eight-wave cycle on the hourly chart.</li>
+  </ul>
+
+  <h3>4.3 The three iron rules of counting</h3>
+  <p>These are <em>hard rules</em>, not tendencies. If any is violated, your count is wrong and must be redone — the market is never the thing at fault.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 320" role="img" aria-label="The three counting rules, shown as violations: wave 2 below wave 1's origin, wave 3 shortest, wave 4 overlapping wave 1">
+      <line class="gridline" x1="300" y1="50" x2="300" y2="250"></line>
+      <line class="gridline" x1="600" y1="50" x2="600" y2="250"></line>
+
+      <text class="ttl" x="150" y="30" text-anchor="middle">Rule 1 · Never below the origin</text>
+      <line x1="40" y1="220" x2="260" y2="220" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 3"></line>
+      <polyline points="55,220 110,140 175,252" fill="none" stroke="var(--ink-2)" stroke-width="2.2"></polyline>
+      <text class="num" x="116" y="130">1</text><text class="num" x="181" y="266">2</text>
+      <text class="num-s" x="264" y="216" text-anchor="end" fill="var(--brass)">Wave 1 origin</text>
+      <g stroke="var(--down)" stroke-width="2.6"><line x1="200" y1="230" x2="222" y2="252"></line><line x1="222" y1="230" x2="200" y2="252"></line></g>
+      <text class="lbl-s" x="150" y="292" text-anchor="middle">Wave 2 low under wave 1's start → count invalid</text>
+
+      <text class="ttl" x="450" y="30" text-anchor="middle">Rule 2 · Wave 3 never shortest</text>
+      <polyline points="330,240 375,190 405,215 450,180 480,200 530,110" fill="none" stroke="var(--ink-2)" stroke-width="2.2"></polyline>
+      <text class="num" x="379" y="180">1</text><text class="num" x="409" y="232">2</text>
+      <text class="num" x="454" y="170">3</text><text class="num" x="484" y="218">4</text><text class="num" x="536" y="102">5</text>
+      <path d="M 440 168 H 428 V 192 H 440" fill="none" stroke="var(--down)" stroke-width="1.6"></path>
+      <text class="lbl-s" x="424" y="160" text-anchor="end" fill="var(--down)">shortest</text>
+      <g stroke="var(--down)" stroke-width="2.6"><line x1="500" y1="240" x2="522" y2="262"></line><line x1="522" y1="240" x2="500" y2="262"></line></g>
+      <text class="lbl-s" x="450" y="292" text-anchor="middle">Wave 3 shorter than 1 and 5 → count invalid</text>
+
+      <text class="ttl" x="750" y="30" text-anchor="middle">Rule 3 · Wave 4 must not overlap wave 1</text>
+      <polyline points="630,250 680,180 710,215 800,110 845,205" fill="none" stroke="var(--ink-2)" stroke-width="2.2"></polyline>
+      <text class="num" x="684" y="170">1</text><text class="num" x="714" y="232">2</text>
+      <text class="num" x="806" y="102">3</text><text class="num" x="851" y="220">4</text>
+      <line x1="640" y1="180" x2="870" y2="180" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 3"></line>
+      <text class="num-s" x="646" y="174" fill="var(--brass)">Wave 1 top</text>
+      <rect x="820" y="180" width="50" height="26" fill="var(--down)" opacity="0.16"></rect>
+      <g stroke="var(--down)" stroke-width="2.6"><line x1="770" y1="238" x2="792" y2="260"></line><line x1="792" y1="238" x2="770" y2="260"></line></g>
+      <text class="lbl-s" x="750" y="292" text-anchor="middle">Wave 4 dips below wave 1's top → count invalid</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 4-2</span>All three panels are <b>wrong on purpose</b>. Their practical value is falsification: when your count breaks any rule, the count is dead — which matters more than counting "right," because it stops you trading a broken script.</figcaption>
+  </figure>
+
+  <h3>4.4 The rule of alternation</h3>
+  <p>If wave 2 corrects in a <strong>simple</strong> shape (a sharp V pullback), wave 4 will usually correct in a <strong>complex</strong> one (a long sideways grind, a triangle) — and vice versa.</p>
+
+  <figure>
+    <svg viewBox="0 0 820 270" role="img" aria-label="Alternation: a simple, sharp wave 2 is usually followed by a complex, sideways wave 4">
+      <text class="ttl" x="200" y="30" text-anchor="middle">Wave 2: simple</text>
+      <polyline points="60,200 130,90 200,175 270,70" fill="none" stroke="var(--ink-2)" stroke-width="2.2"></polyline>
+      <text class="num" x="134" y="80">1</text><text class="num" x="204" y="194">2</text><text class="num" x="274" y="62">3</text>
+      <rect x="120" y="80" width="92" height="106" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"></rect>
+      <text class="lbl-s" x="200" y="228" text-anchor="middle">One sharp V — down fast, back fast</text>
+      <text class="lbl-s" x="200" y="248" text-anchor="middle" fill="var(--accent)">Short in time, deep in price</text>
+
+      <text class="ttl" x="600" y="30" text-anchor="middle">Wave 4: complex</text>
+      <polyline points="430,180 500,70 530,120 565,92 600,128 635,100 665,125 700,60" fill="none" stroke="var(--ink-2)" stroke-width="2.2"></polyline>
+      <text class="num" x="504" y="60">3</text><text class="num" x="646" y="146">4</text><text class="num" x="704" y="52">5</text>
+      <rect x="520" y="80" width="150" height="60" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"></rect>
+      <text class="lbl-s" x="600" y="228" text-anchor="middle">A sideways grind, tightening into a triangle</text>
+      <text class="lbl-s" x="600" y="248" text-anchor="middle" fill="var(--accent)">Long in time, shallow in price</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 4-3</span>Alternation in practice: if wave 2 already delivered its fast, deep flush, <b>do not sit waiting for wave 4 to hand you the same pretty dip</b> — it is far more likely to be a patience-grinding sideways drift.</figcaption>
+  </figure>
+
+  <h3>4.5 Counting waves the right way</h3>
+  <ol class="list">
+    <li><strong>Start from the higher timeframe</strong>: mark the major swing highs and lows on the weekly or daily first, then subdivide. Starting from the 5-minute chart guarantees getting lost.</li>
+    <li><strong>Keep a primary count and an alternate</strong>: the mature workflow is always "main count + alternate count," with a written price level at which you switch.</li>
+    <li><strong>Falsify with the three rules — don't force with imagination</strong>: if it won't count, it won't count; that itself says wave analysis doesn't apply right now. Switch tools or stand aside.</li>
+  </ol>
+
+  <div class="note warn">
+    <span class="h mono">IMPORTANT</span>
+    <p>Elliott Wave is <strong>not a precision forecasting device but a probabilistic framework</strong>. Counting is subjective — ten analysts can produce ten counts, and counts get revised after the fact. Used properly, a count is a script hypothesis for the current market, to be verified or killed by trendlines, MAs, and volume — <strong>never buy size purely because "I'm counting this as wave 3."</strong></p>
+  </div>
+</section>
+
+<section id="c5" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">LADDER 05 · THE MATH OF THE WAVES</span><span class="goal">Goal: turn "roughly there" into actual numbers</span></div>
+    <h2>Fibonacci — quantifying the targets</h2>
+  </div>
+
+  <p>The first four rungs answer "direction" and "structure." One question remains: <em>where to take profit, and where to buy the dip?</em> Fibonacci tools answer it — not with an exact tick, but with statistically meaningful price zones.</p>
+
+  <h3>5.1 The sequence and the golden ratio</h3>
+  <p>The Fibonacci sequence starts from 0 and 1; each number is the sum of the previous two. <strong>The ratio of adjacent terms converges to 0.618</strong> — the golden ratio; its reciprocal is roughly 1.618.</p>
+
+  <figure>
+    <svg viewBox="0 0 820 270" role="img" aria-label="The Fibonacci sequence: each term is the sum of the two before it; the ratio of neighbors approaches 0.618">
+      <g class="num" font-size="16" fill="var(--ink-2)" text-anchor="middle">
+        <text x="60" y="86">0</text><text x="122" y="86">1</text><text x="184" y="86">1</text><text x="246" y="86">2</text>
+        <text x="308" y="86">3</text><text x="370" y="86">5</text><text x="432" y="86">8</text>
+        <text x="494" y="86" fill="var(--accent)" font-weight="600">13</text>
+        <text x="556" y="86" fill="var(--accent)" font-weight="600">21</text>
+        <text x="618" y="86" fill="var(--brass)" font-weight="600">34</text>
+        <text x="680" y="86">55</text><text x="742" y="86">89</text>
+      </g>
+      <path d="M 494 98 C 512 146, 588 146, 616 112" fill="none" stroke="var(--accent)" stroke-width="1.4"></path>
+      <path d="M 556 98 C 572 134, 600 134, 616 112" fill="none" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#ar-ac)"></path>
+      <text class="lbl" x="556" y="172" text-anchor="middle" fill="var(--accent)">13 + 21 = 34</text>
+      <line class="gridline" x1="40" y1="196" x2="780" y2="196"></line>
+      <text class="num" x="170" y="228" text-anchor="middle" fill="var(--ink)">21 ÷ 34 = 0.618</text>
+      <text class="lbl-s" x="170" y="250" text-anchor="middle" fill="var(--brass)">the golden ratio</text>
+      <text class="num" x="410" y="228" text-anchor="middle" fill="var(--ink)">21 ÷ 55 = 0.382</text>
+      <text class="lbl-s" x="410" y="250" text-anchor="middle" fill="var(--brass)">skip-one ratio</text>
+      <text class="num" x="650" y="228" text-anchor="middle" fill="var(--ink)">34 ÷ 21 = 1.618</text>
+      <text class="lbl-s" x="650" y="250" text-anchor="middle" fill="var(--brass)">reciprocal of 0.618</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 5-1</span>These three numbers — 0.618, 0.382, 1.618 — generate every retracement and extension level that follows. <b>Strictly speaking 0.5 and 0.786 are not Fibonacci ratios</b> (0.5 is a plain half; 0.786 is √0.618), but they are so useful in practice that every charting tool draws them anyway.</figcaption>
+  </figure>
+
+  <h3>5.2 Fibonacci retracement — finding support</h3>
+  <p>Retracement locates <strong>where the next pullback is likely to stop</strong> inside a completed swing.</p>
+  <p><strong>How to draw</strong>: in an uptrend, click the <em>swing low</em> and drag to the <em>swing high</em> — the tool plots the levels; in a downtrend, high first, then low.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="Fibonacci retracement: drawn from swing low to swing high, plotting support levels from 23.6% to 78.6%">
+      <rect x="80" y="210" width="720" height="31" fill="var(--accent-soft)"></rect>
+      <g stroke="var(--line)" stroke-width="1" stroke-dasharray="5 4">
+        <line x1="80" y1="80" x2="800" y2="80"></line>
+        <line x1="80" y1="141" x2="800" y2="141"></line>
+        <line x1="80" y1="179" x2="800" y2="179"></line>
+        <line x1="80" y1="210" x2="800" y2="210"></line>
+        <line x1="80" y1="241" x2="800" y2="241"></line>
+        <line x1="80" y1="284" x2="800" y2="284"></line>
+        <line x1="80" y1="340" x2="800" y2="340"></line>
+      </g>
+      <g class="num-s" fill="var(--ink-3)">
+        <text x="810" y="84">0.0 %</text>
+        <text x="810" y="145">23.6 %</text>
+        <text x="810" y="183">38.2 %</text>
+        <text x="810" y="214">50.0 %</text>
+        <text x="810" y="245" fill="var(--brass)">61.8 %</text>
+        <text x="810" y="288">78.6 %</text>
+        <text x="810" y="344">100 %</text>
+      </g>
+      <polyline points="80,340 150,290 210,308 280,180 330,215 380,80" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+      <polyline points="380,80 440,140 480,120 520,179 570,120 640,70 720,38" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <circle cx="80" cy="340" r="5" fill="var(--brass)"></circle>
+      <circle cx="380" cy="80" r="5" fill="var(--brass)"></circle>
+      <text class="lbl-s" x="92" y="360" fill="var(--brass)">① swing low</text>
+      <text class="lbl-s" x="388" y="66" fill="var(--brass)">② swing high</text>
+      <circle cx="520" cy="179" r="7.5" fill="none" stroke="var(--up)" stroke-width="2.2"></circle>
+      <text class="lbl" x="534" y="176" fill="var(--up)">Pullback holds at 38.2%</text>
+      <text class="lbl-s" x="534" y="196">→ buyers are impatient; consider joining the trend</text>
+      <text class="lbl-s" x="92" y="228" fill="var(--accent)">Strength divide: 50%–61.8%</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 5-2</span>Pullback <b>depth is a thermometer of relative strength</b>: stopping at 23.6%–38.2% and turning up means buyers can't wait; stabilizing only at 50%–61.8% means the original trend is being challenged and needs corroboration; a <b>decisive break of 61.8%</b> means that swing is probably finished — drop the bullish hypothesis.</figcaption>
+  </figure>
+
+  <div class="note tip">
+    <span class="h mono">STOP-LOSS TIP</span>
+    <p><strong>Never place the stop exactly on a Fibonacci level.</strong> Everyone can see those prices; stop orders pile up there and one quick wick clears them out before price reverses. Leave a buffer of <strong>5–10 ticks (or 10–20% of the instrument's average daily range) beyond the level</strong>.</p>
+  </div>
+
+  <h3>5.3 Fibonacci extension — finding targets</h3>
+  <p>Retracement answers "where to buy the dip"; extension answers <strong>"where to sell the rally"</strong>: it projects a completed impulse's height forward to estimate where the next leg may reach.</p>
+  <p><strong>Common levels</strong>: 61.8%, 100%, 161.8%. Three anchors: start A → high B → pullback low C; project multiples of AB upward from C.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="Fibonacci extension: projecting the AB swing from point C to targets at 61.8%, 100%, and 161.8%">
+      <g stroke="var(--line)" stroke-width="1" stroke-dasharray="5 4">
+        <line x1="400" y1="214" x2="820" y2="214"></line>
+        <line x1="400" y1="160" x2="820" y2="160"></line>
+        <line x1="400" y1="74" x2="820" y2="74"></line>
+      </g>
+      <g class="num-s" fill="var(--ink-3)">
+        <text x="828" y="218">61.8 %</text>
+        <text x="828" y="164" fill="var(--brass)">100 %</text>
+        <text x="828" y="78">161.8 %</text>
+      </g>
+      <text class="lbl-s" x="828" y="238">first take-profit</text>
+      <text class="lbl-s" x="828" y="184">primary target</text>
+      <text class="lbl-s" x="828" y="98">strong-trend stretch</text>
+      <polyline points="80,360 160,300 210,326 280,220" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+      <polyline points="280,220 330,272 360,258 400,300" fill="none" stroke="var(--down)" stroke-width="2.4"></polyline>
+      <polyline points="400,300 470,236 520,258 580,160 650,192 720,74" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <g fill="var(--brass)"><circle cx="80" cy="360" r="5"></circle><circle cx="280" cy="220" r="5"></circle><circle cx="400" cy="300" r="5"></circle></g>
+      <text class="num" x="72" y="382" fill="var(--brass)">A</text>
+      <text class="num" x="276" y="206" fill="var(--brass)">B</text>
+      <text class="num" x="404" y="322" fill="var(--brass)">C</text>
+      <path d="M 62 356 V 224" stroke="var(--accent)" stroke-width="1.3" fill="none" marker-end="url(#ar-ac)"></path>
+      <text class="lbl-s" x="54" y="292" text-anchor="end" fill="var(--accent)">AB height</text>
+      <path d="M 386 296 V 166" stroke="var(--accent)" stroke-width="1.3" fill="none" marker-end="url(#ar-ac)"></path>
+      <text class="lbl-s" x="378" y="240" text-anchor="end" fill="var(--accent)">projected from C</text>
+      <circle cx="580" cy="160" r="7" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <text class="lbl-s" x="592" y="150" fill="var(--up)">at 100%: sell half</text>
+      <circle cx="720" cy="74" r="7" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <text class="lbl-s" x="640" y="56" fill="var(--up)">at 161.8%: close or trail tightly</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig 5-3</span>The practical use of extensions is <b>scaling out</b>, not sniping the top: trim a third at 61.8%, a third at 100%, and trail the rest toward 161.8% or a structure break. Whatever the trend does, you never walk away empty-handed.</figcaption>
+  </figure>
+
+  <h3>5.4 Working with Elliott Wave</h3>
+  <p>Fibonacci is the mathematical backbone of wave theory. Together they yield a set of working proportions:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Wave</th><th>Typical proportion</th><th>Practical meaning</th></tr></thead>
+      <tbody>
+        <tr><td><b>Wave 2</b></td><td class="n">retraces 50%–61.8% of wave 1 (61.8% common)</td><td>Deep pullbacks are normal here — don't declare the trend dead too early</td></tr>
+        <tr><td><b>Wave 3</b></td><td class="n">161.8% of wave 1; 261.8% when strong</td><td>The main-leg target — the one leg worth full size</td></tr>
+        <tr><td><b>Wave 4</b></td><td class="n">retraces 23.6%–38.2% of wave 3</td><td>Shallow and slow — don't wait for wave-2 depth</td></tr>
+        <tr><td><b>Wave 5</b></td><td class="n">100% of wave 1, or 61.8% of the 1→3 span</td><td>The last leg; volume often diverges — fight and retreat</td></tr>
+        <tr><td><b>Waves A / C</b></td><td class="n">C ≈ 100% or 161.8% of A</td><td>Reference floor for corrections</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="h mono">USE WITH CARE</span>
+    <p>① Fibonacci gives <strong>probabilistic target zones</strong>, not exact entries; ② always cross-check with <strong>volume, MAs, and trendlines</strong> — only when several independent tools point at the same area (<strong>confluence</strong>) does confidence rise meaningfully; ③ in small-cap or thinly traded names its reliability drops sharply, because a little money can push price anywhere.</p>
+  </div>
+</section>
+
+<section id="c6" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">PRACTICE A · FROM READING TO ORDERING</span><span class="goal">Goal: chain the tools into a repeatable procedure</span></div>
+    <h2>The full trading SOP</h2>
+  </div>
+
+  <p>The first five chapters were "how to read." This one is "how to act." However much theory you hold, without a fixed procedure you will still order by feel at the screen — <em>and feel is the fastest known way to lose money</em>.</p>
+  <p>A complete trade has six stages, each with defined inputs, outputs, and reasons not to act.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 340" role="img" aria-label="The six-stage trading loop: screen, set direction, find the entry, open, manage, review — with review feeding back into the screening rules">
+      <g>
+        <rect x="60" y="50" width="200" height="72" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.4"></rect>
+        <text class="num-s" x="72" y="70" fill="var(--brass)">STEP 1</text>
+        <text class="ttl" x="160" y="92" text-anchor="middle">Screen · watchlist</text>
+        <text class="lbl-s" x="160" y="112" text-anchor="middle">whole market → 10–20 names</text>
+      </g>
+      <g>
+        <rect x="350" y="50" width="200" height="72" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.4"></rect>
+        <text class="num-s" x="362" y="70" fill="var(--brass)">STEP 2</text>
+        <text class="ttl" x="450" y="92" text-anchor="middle">Direction · multi-TF</text>
+        <text class="lbl-s" x="450" y="112" text-anchor="middle">weekly sets tone, daily sets structure</text>
+      </g>
+      <g>
+        <rect x="640" y="50" width="200" height="72" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.4"></rect>
+        <text class="num-s" x="652" y="70" fill="var(--brass)">STEP 3</text>
+        <text class="ttl" x="740" y="92" text-anchor="middle">Find the entry</text>
+        <text class="lbl-s" x="740" y="112" text-anchor="middle">confluence + candle confirmation</text>
+      </g>
+      <g>
+        <rect x="640" y="200" width="200" height="72" fill="var(--surface-2)" stroke="var(--up)" stroke-width="1.4"></rect>
+        <text class="num-s" x="652" y="220" fill="var(--brass)">STEP 4</text>
+        <text class="ttl" x="740" y="242" text-anchor="middle">Open the position</text>
+        <text class="lbl-s" x="740" y="262" text-anchor="middle">size derived from stop distance</text>
+      </g>
+      <g>
+        <rect x="350" y="200" width="200" height="72" fill="var(--surface-2)" stroke="var(--up)" stroke-width="1.4"></rect>
+        <text class="num-s" x="362" y="220" fill="var(--brass)">STEP 5</text>
+        <text class="ttl" x="450" y="242" text-anchor="middle">Manage</text>
+        <text class="lbl-s" x="450" y="262" text-anchor="middle">trailing stop + scaled exits</text>
+      </g>
+      <g>
+        <rect x="60" y="200" width="200" height="72" fill="var(--surface-2)" stroke="var(--brass)" stroke-width="1.4"></rect>
+        <text class="num-s" x="72" y="220" fill="var(--brass)">STEP 6</text>
+        <text class="ttl" x="160" y="242" text-anchor="middle">Review &amp; file</text>
+        <text class="lbl-s" x="160" y="262" text-anchor="middle">record · grade · amend rules</text>
+      </g>
+      <path d="M 264 86 H 344" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="304" y="78" text-anchor="middle">filter</text>
+      <path d="M 554 86 H 634" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="594" y="78" text-anchor="middle">align TFs</text>
+      <path d="M 740 126 V 194" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="750" y="164">act only on a signal</text>
+      <path d="M 636 236 H 556" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="596" y="228" text-anchor="middle">in tranches</text>
+      <path d="M 346 236 H 266" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="306" y="228" text-anchor="middle">after exit</text>
+      <path d="M 60 236 H 30 V 86 H 54" stroke="var(--brass)" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#ar-br)"></path>
+      <text class="num-s" x="40" y="166" fill="var(--brass)" transform="rotate(-90 40 166)" text-anchor="middle">feedback amends the rules</text>
+      <text class="lbl-s" x="450" y="316" text-anchor="middle">Six stages form a loop — without step 6, the first five never improve</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig A-1</span>Note the <b>dashed feedback line</b> on the left: the output of a review is not a mood summary but a concrete amendment to the screening or entry rules. Remove that line and trading is mere repetition, not training.</figcaption>
+  </figure>
+
+  <h3>STEP 1 · Screening: shrink the market to 20 names</h3>
+  <p>The greatest waste of a beginner's time is rummaging through thousands of tickers daily. A fixed filter set concentrates attention:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Filter</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><b>Liquidity</b></td><td>Daily turnover above the market median; drop micro-caps and chronically shrinking volume</td><td>Technical analysis degrades in illiquid names; slippage and impact costs grow</td></tr>
+        <tr><td><b>Trend state</b></td><td>Price above MA60 + bullish alignment (for longs); the reverse for shorts / avoid</td><td>Hunting only downwind raises the base win rate for free</td></tr>
+        <tr><td><b>Clean structure</b></td><td>The chart offers drawable trendlines and clear prior highs/lows</td><td>If no line can be drawn, there is no usable structure — skip it</td></tr>
+        <tr><td><b>Suitable volatility</b></td><td>Recent range neither dead nor freakishly expanded</td><td>Too quiet has no room; too wild wicks out reasonable stops</td></tr>
+        <tr><td><b>Exclusions</b></td><td>Names facing major uncertainty: pending events, halts, imminent earnings</td><td>Technical analysis cannot price a news shock</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Names that pass go into the <strong>watchlist</strong>; follow only those 10–20. Refresh the list weekly — not daily.</p>
+
+  <h3>STEP 2 · Direction: timeframes must agree</h3>
+  <p>The same stock can flash opposite signals on different timeframes. The cure is a fixed <strong>three-timeframe stack</strong>: the large one sets direction, the middle one sets structure, the small one times the entry. <em>Only trade when all three point the same way.</em></p>
+
+  <figure>
+    <svg viewBox="0 0 880 330" role="img" aria-label="Multi-timeframe confluence: trade only when all three timeframes agree; stand aside when they conflict">
+      <text class="ttl" x="215" y="30" text-anchor="middle" fill="var(--up)">Three TFs aligned → tradeable</text>
+      <g class="lbl" fill="var(--ink-2)">
+        <text x="50" y="96">Weekly</text><text x="50" y="166">Daily</text><text x="50" y="236">Hourly</text>
+      </g>
+      <polyline points="120,104 165,88 210,96 260,72 310,58" fill="none" stroke="var(--up)" stroke-width="2.2"></polyline>
+      <polyline points="120,174 165,156 210,166 260,142 310,128" fill="none" stroke="var(--up)" stroke-width="2.2"></polyline>
+      <polyline points="120,244 165,226 210,236 260,212 310,198" fill="none" stroke="var(--up)" stroke-width="2.2"></polyline>
+      <g stroke="var(--up)" stroke-width="2.4" fill="none">
+        <path d="M 340 92 l 8 9 l 16 -20"></path><path d="M 340 162 l 8 9 l 16 -20"></path><path d="M 340 232 l 8 9 l 16 -20"></path>
+      </g>
+      <text class="lbl-s" x="215" y="286" text-anchor="middle">Weekly sets tone → daily sets structure → hourly times it</text>
+      <text class="lbl-s" x="215" y="308" text-anchor="middle" fill="var(--up)">Directions agree: enter with the trend</text>
+
+      <line class="gridline" x1="440" y1="50" x2="440" y2="270"></line>
+
+      <text class="ttl" x="655" y="30" text-anchor="middle" fill="var(--down)">TFs in conflict → don't trade</text>
+      <g class="lbl" fill="var(--ink-2)">
+        <text x="490" y="96">Weekly</text><text x="490" y="166">Daily</text><text x="490" y="236">Hourly</text>
+      </g>
+      <polyline points="560,104 605,88 650,96 700,72 750,58" fill="none" stroke="var(--up)" stroke-width="2.2"></polyline>
+      <polyline points="560,128 605,146 650,138 700,164 750,180" fill="none" stroke="var(--down)" stroke-width="2.2"></polyline>
+      <polyline points="560,206 605,224 650,214 700,240 750,252" fill="none" stroke="var(--down)" stroke-width="2.2"></polyline>
+      <g stroke="var(--up)" stroke-width="2.4" fill="none"><path d="M 780 92 l 8 9 l 16 -20"></path></g>
+      <g stroke="var(--down)" stroke-width="2.4">
+        <line x1="780" y1="154" x2="798" y2="172"></line><line x1="798" y1="154" x2="780" y2="172"></line>
+        <line x1="780" y1="224" x2="798" y2="242"></line><line x1="798" y1="224" x2="780" y2="242"></line>
+      </g>
+      <text class="lbl-s" x="655" y="286" text-anchor="middle">Big TF up, smaller TFs down</text>
+      <text class="lbl-s" x="655" y="308" text-anchor="middle" fill="var(--down)">Wait for them to align — flat is a position too</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig A-2</span>Standard stacks: <b>weekly / daily / hourly</b> for swing trading, or <b>daily / hourly / 15-min</b> for short-term. Keep adjacent timeframes about 4–6× apart — closer duplicates information, wider loses the hand-off.</figcaption>
+  </figure>
+
+  <h3>STEP 3 · The entry: wait for confluence, not a feeling</h3>
+  <p>Entry quality equals the number of independent tools pointing at the same price area. <strong>Three or more, or no trade</strong>:</p>
+
+  <figure>
+    <svg viewBox="0 0 880 370" role="img" aria-label="A confluence entry: rising trendline, MA20, the 61.8% retracement, and a hammer candle coinciding in one small price band">
+      <line x1="300" y1="196" x2="820" y2="196" stroke="var(--brass)" stroke-width="1.4" stroke-dasharray="5 4"></line>
+      <text class="num-s" x="828" y="200" fill="var(--brass)">61.8%</text>
+      <line x1="60" y1="320" x2="800" y2="112" stroke="var(--accent)" stroke-width="1.8"></line>
+      <text class="lbl-s" x="808" y="116" fill="var(--accent)">trendline</text>
+      <path d="M 120 310 C 260 280, 400 232, 560 192 S 740 148, 800 134" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="7 4"></path>
+      <text class="lbl-s" x="808" y="138" fill="var(--ink-3)">MA20</text>
+      <polyline points="60,330 130,296 190,312 260,254 320,268 400,150 460,124 520,190" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <polyline points="520,190 600,140 660,158 740,72" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <circle cx="520" cy="196" r="32" fill="none" stroke="var(--up)" stroke-width="2" stroke-dasharray="5 4"></circle>
+      <line x1="520" y1="168" x2="520" y2="226" class="s-up" stroke-width="1.8"></line>
+      <rect x="512" y="176" width="16" height="14" class="body-fill s-up" stroke-width="1.8"></rect>
+      <path d="M 520 292 V 236" stroke="var(--up)" stroke-width="1.4" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="lbl" x="520" y="314" text-anchor="middle" fill="var(--up)">Confluence entry</text>
+      <text class="lbl-s" x="520" y="336" text-anchor="middle">trendline + MA + 61.8% + hammer: four hits in one band</text>
+      <text class="lbl-s" x="452" y="118" text-anchor="end">swing high</text>
+      <text class="lbl-s" x="60" y="352">swing low</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig A-3</span>A lone trendline, or a lone 61.8%, is only a "possible support." When <b>four unrelated tools point at the same 1–2% price band</b>, the spot is worth risk — because a large share of market participants will react there in the same way at the same time.</figcaption>
+  </figure>
+
+  <ul class="check">
+    <li><span class="box"></span><div><b>Direction: three timeframes agree</b><span class="d">Weekly, daily, hourly aligned; otherwise skip the setup entirely</span></div></li>
+    <li><span class="box"></span><div><b>Location: at least three tools in confluence</b><span class="d">Trendline / MA / Fibonacci level / former resistance-turned-support / round number — any three or more overlapping</span></div></li>
+    <li><span class="box"></span><div><b>Signal: an explicit candle confirmation</b><span class="d">Hammer, bullish engulfing, morning star, etc.; location without a signal = still falling</span></div></li>
+    <li><span class="box"></span><div><b>Volume: dries up on the pullback, expands on the turn</b><span class="d">Contraction while correcting, expansion on the confirmation day</span></div></li>
+    <li><span class="box"></span><div><b>Risk: a defined stop at an acceptable distance</b><span class="d">Stop goes beyond the confluence zone plus buffer; if that's too far away, this is not your entry</span></div></li>
+    <li><span class="box"></span><div><b>Reward: R:R of at least 2:1</b><span class="d">Target from the extension or prior high, divided by stop distance; below 2:1, pass</span></div></li>
+  </ul>
+
+  <h3>STEPS 4–5 · Entry, adds, and exits</h3>
+  <p>Here is the whole rule set laid onto one real-shaped trade:</p>
+
+  <figure>
+    <svg viewBox="0 0 900 400" role="img" aria-label="One complete trade: entry, initial stop, scale-out at target 1, trailing stop raised above cost, final exit on the trailing stop">
+      <line x1="180" y1="312" x2="500" y2="312" stroke="var(--down)" stroke-width="1.6" stroke-dasharray="6 4"></line>
+      <text class="num-s" x="508" y="316" fill="var(--down)">initial stop</text>
+      <line x1="420" y1="245" x2="760" y2="245" stroke="var(--down)" stroke-width="1.6" stroke-dasharray="6 4"></line>
+      <text class="num-s" x="590" y="238" text-anchor="middle" fill="var(--down)">trailing stop (raised above cost)</text>
+      <line x1="200" y1="190" x2="860" y2="190" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+      <text class="num-s" x="192" y="186" text-anchor="end" fill="var(--brass)">target 1</text>
+      <line x1="200" y1="110" x2="860" y2="110" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+      <text class="num-s" x="192" y="106" text-anchor="end" fill="var(--brass)">target 2</text>
+      <polyline points="60,340 120,305 200,280 250,250 300,270 360,215 420,190 470,220 520,196 590,150 650,168 700,110 760,140 820,168" fill="none" stroke="var(--ink-2)" stroke-width="2"></polyline>
+      <circle cx="200" cy="280" r="6" fill="var(--up)"></circle>
+      <text class="lbl-s" x="200" y="264" text-anchor="middle" fill="var(--up)">entry · first tranche</text>
+      <circle cx="420" cy="190" r="6" fill="var(--brass)"></circle>
+      <text class="lbl-s" x="404" y="176" text-anchor="end" fill="var(--brass)">sell ⅓</text>
+      <circle cx="520" cy="196" r="6" fill="var(--up)"></circle>
+      <text class="lbl-s" x="528" y="214" fill="var(--up)">add on the retest (only while the trend holds)</text>
+      <circle cx="700" cy="110" r="6" fill="var(--brass)"></circle>
+      <text class="lbl-s" x="700" y="94" text-anchor="middle" fill="var(--brass)">sell ⅓</text>
+      <circle cx="820" cy="168" r="6" fill="var(--down)"></circle>
+      <text class="lbl-s" x="866" y="150" text-anchor="end" fill="var(--down)">trailing stop hit → close the rest</text>
+      <path d="M 170 282 V 308" stroke="var(--ink-3)" stroke-width="1.2" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="162" y="302" text-anchor="end">1R</text>
+      <text class="lbl-s" x="450" y="376" text-anchor="middle">The entry does one thing: define how much you lose if wrong. The rules do the rest.</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig A-4</span>The whole trade contains <b>exactly one discretionary decision: the entry</b>. Every later trim, trail, and exit fires from pre-written rules. The point is not a bigger win on this trade but <b>attributable results</b> — you know why you won, and which step to fix when you lose.</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card"><span class="k mono">ENTRY</span><b>Open small, add later</b><p>The first tranche is at most half the planned size. Add only at the retest, only after price confirms; <strong>never add to a losing position</strong>.</p></div>
+    <div class="card"><span class="k mono">STOP</span><b>The stop goes in with the order</b><p>The stop level is fixed before the order is sent (beyond the confluence zone plus buffer). An unstopped trade hands your loss ceiling to luck.</p></div>
+    <div class="card"><span class="k mono">TRAIL</span><b>Trailing stop: up only</b><p>After price makes a new structural high, raise the stop under the latest valid swing low. <strong>A trailing stop moves only in your favor — never back down.</strong></p></div>
+    <div class="card"><span class="k mono">EXIT</span><b>Scale out, don't snipe</b><p>Sell a third at target 1, a third at target 2, trail the rest. Give up the fantasy of selling the top.</p></div>
+  </div>
+
+  <h3>STEP 6 · Review (see part C)</h3>
+  <p>The review is the only stage that makes you better. Tools in <a class="up-link" href="#c8">C · Practice &amp; review</a>.</p>
+</section>
+
+<section id="c7" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">PRACTICE B · SURVIVE FIRST, COMPOUND SECOND</span><span class="goal">Goal: make sure no single trade can hurt you</span></div>
+    <h2>Money management and risk control</h2>
+  </div>
+
+  <p>Technical analysis sets your <strong>win rate</strong>; money management decides <strong>whether you survive long enough for the win rate to matter</strong>. Most accounts don't die of a wrong call — they die of one oversized wrong call.</p>
+
+  <h3>B.1 The asymmetry of loss and recovery</h3>
+  <p>Every risk rule starts from this fact: <em>losses and recoveries are not symmetric</em>. The deeper the loss, the faster the required recovery gain accelerates.</p>
+
+  <figure>
+    <svg viewBox="0 0 820 270" role="img" aria-label="Loss-recovery asymmetry: a 30 percent loss needs a 42.9 percent gain to recover; a 50 percent loss needs 100 percent">
+      <rect x="80" y="60" width="440" height="38" fill="var(--surface-2)" stroke="var(--line)"></rect>
+      <text class="lbl" x="92" y="85">Capital 100</text>
+      <line x1="520" y1="52" x2="520" y2="230" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 4"></line>
+      <rect x="80" y="122" width="308" height="38" fill="var(--down)" opacity="0.18"></rect>
+      <rect x="80" y="122" width="308" height="38" fill="none" stroke="var(--down)"></rect>
+      <text class="lbl" x="92" y="147">Lose 30% → 70 left</text>
+      <path d="M 396 141 H 512" stroke="var(--up)" stroke-width="1.6" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="num" x="528" y="146" fill="var(--up)">needs +42.9%</text>
+      <rect x="80" y="184" width="220" height="38" fill="var(--down)" opacity="0.28"></rect>
+      <rect x="80" y="184" width="220" height="38" fill="none" stroke="var(--down)"></rect>
+      <text class="lbl" x="92" y="209">Lose 50% → 50 left</text>
+      <path d="M 308 203 H 512" stroke="var(--up)" stroke-width="1.6" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="num" x="528" y="208" fill="var(--up)">needs +100%</text>
+      <text class="lbl-s" x="80" y="252">Same "back to even," very different price — this is why stops must be small</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig B-1</span>After a 50% loss you need a double just to break even — and doubles are far rarer than halvings. <b>Capping the single-trade loss is really protecting your future ability to seize opportunities.</b></figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Drawdown</th><th>Gain needed to recover</th><th>Difficulty</th></tr></thead>
+      <tbody>
+        <tr><td class="n">−10%</td><td class="n">+11.1%</td><td>One normal swing</td></tr>
+        <tr><td class="n">−20%</td><td class="n">+25.0%</td><td>Needs a decent rally</td></tr>
+        <tr><td class="n">−30%</td><td class="n">+42.9%</td><td>Needs a full advance</td></tr>
+        <tr><td class="n">−50%</td><td class="n">+100%</td><td>Needs a double; most never see it</td></tr>
+        <tr><td class="n">−70%</td><td class="n">+233%</td><td>Effectively starting over</td></tr>
+        <tr><td class="n">−90%</td><td class="n">+900%</td><td>Academic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>B.2 The per-trade risk rule: size from the stop</h3>
+  <p>Beginners think "how much should I buy?" first. Professionals invert it: <strong>fix "how much am I willing to lose on this trade," then derive the share count</strong>.</p>
+  <div class="formula">
+    Max loss per trade = account equity × per-trade risk (<span style="color:var(--down)">suggested 1%, never above 2%</span>)<br>
+    Stop distance per share = entry price − stop price<br>
+    <b>Shares = max loss per trade ÷ stop distance per share</b>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 880 300" role="img" aria-label="Position-sizing chain: equity times risk percent gives the risk budget; dividing by stop distance gives the share count">
+      <g>
+        <rect x="24" y="90" width="180" height="92" fill="var(--surface-2)" stroke="var(--line)"></rect>
+        <text class="lbl-s" x="114" y="118" text-anchor="middle">Account equity</text>
+        <text class="num" x="114" y="146" text-anchor="middle" font-size="19" fill="var(--ink)">100,000</text>
+        <text class="num-s" x="114" y="168" text-anchor="middle">USD</text>
+      </g>
+      <path d="M 208 136 H 258" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="233" y="126" text-anchor="middle" fill="var(--brass)">× 1%</text>
+      <g>
+        <rect x="262" y="90" width="180" height="92" fill="var(--surface-2)" stroke="var(--down)" stroke-width="1.4"></rect>
+        <text class="lbl-s" x="352" y="118" text-anchor="middle">Max loss per trade</text>
+        <text class="num" x="352" y="146" text-anchor="middle" font-size="19" fill="var(--down)">1,000</text>
+        <text class="num-s" x="352" y="168" text-anchor="middle">USD = 1R</text>
+      </g>
+      <path d="M 446 136 H 496" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="471" y="126" text-anchor="middle" fill="var(--brass)">÷ $2</text>
+      <g>
+        <rect x="500" y="90" width="180" height="92" fill="var(--surface-2)" stroke="var(--line)"></rect>
+        <text class="lbl-s" x="590" y="118" text-anchor="middle">Shares</text>
+        <text class="num" x="590" y="146" text-anchor="middle" font-size="19" fill="var(--ink)">500</text>
+        <text class="num-s" x="590" y="168" text-anchor="middle">shares</text>
+      </g>
+      <path d="M 684 136 H 734" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+      <text class="num-s" x="709" y="126" text-anchor="middle" fill="var(--brass)">× $20</text>
+      <g>
+        <rect x="738" y="90" width="128" height="92" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.4"></rect>
+        <text class="lbl-s" x="802" y="118" text-anchor="middle">Capital used</text>
+        <text class="num" x="802" y="146" text-anchor="middle" font-size="19" fill="var(--accent)">10,000</text>
+        <text class="num-s" x="802" y="168" text-anchor="middle">10% of equity</text>
+      </g>
+      <text class="lbl-s" x="24" y="226">Given: entry $20, stop $18 → stop distance $2 per share</text>
+      <text class="lbl-s" x="24" y="250" fill="var(--up)">Result: even a total miss costs 1% — ten straight losses still leave 90%+ of capital</text>
+      <text class="lbl-s" x="24" y="274">If the stop distance doubles to $4, the share count halves to 250 — wider stop, smaller size, same risk</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig B-2</span>The only human decision in the chain is <b>the per-trade risk percent</b>; everything else is arithmetic. The reward: position size auto-adapts to volatility — the farther the stop (the wilder the name), the fewer shares you buy, and every trade carries the same risk.</figcaption>
+  </figure>
+
+  <h3>B.3 Thinking in R: reward ratio and expectancy</h3>
+  <p>Call the max loss per trade <strong>1R</strong> and measure all outcomes in R: a $2,000 win is <span class="mono">+2R</span>, a $1,000 loss is <span class="mono">−1R</span>. Now every trade is comparable regardless of account size or share price.</p>
+  <div class="formula">
+    Expectancy = win rate × avg win (R) − (1 − win rate) × avg loss (R)<br>
+    <span class="c">e.g. 40% win rate, 3:1 payoff → 0.4 × 3 − 0.6 × 1 = <b>+0.6R per trade</b>: positive long-run edge</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Payoff ratio</th><th>Breakeven win rate</th><th>Expectancy @ 40% wins</th><th>Expectancy @ 50% wins</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1 : 1</td><td class="n">50.0%</td><td class="n" style="color:var(--down)">−0.20R</td><td class="n">0.00R</td></tr>
+        <tr><td class="n">1.5 : 1</td><td class="n">40.0%</td><td class="n">0.00R</td><td class="n" style="color:var(--up)">+0.25R</td></tr>
+        <tr><td class="n">2 : 1</td><td class="n">33.3%</td><td class="n" style="color:var(--up)">+0.20R</td><td class="n" style="color:var(--up)">+0.50R</td></tr>
+        <tr><td class="n">3 : 1</td><td class="n">25.0%</td><td class="n" style="color:var(--up)">+0.60R</td><td class="n" style="color:var(--up)">+1.00R</td></tr>
+        <tr><td class="n">5 : 1</td><td class="n">16.7%</td><td class="n" style="color:var(--up)">+1.40R</td><td class="n" style="color:var(--up)">+2.00R</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The counter-intuitive takeaway: <em>you can be profitable with a 40% win rate</em> — if the payoff ratio is high enough. Conversely, someone winning 70% of trades at 1:3 (quick small wins, stubborn big losses) is guaranteed to bleed out.</p>
+
+  <div class="note tip">
+    <span class="h mono">SCREENING RULE</span>
+    <p>Use the payoff ratio as a <strong>pre-entry filter</strong>: compute stop distance and distance to target 1; <strong>below 2:1, walk away</strong>. This one rule alone deletes most impulse trades.</p>
+  </div>
+
+  <h3>B.4 Three ways to set a stop</h3>
+  <div class="cards">
+    <div class="card"><span class="k mono">STRUCTURAL</span><b>Structural stop (preferred)</b><p>Beyond the latest valid swing low, trendline, or confluence zone <strong>plus a buffer</strong>. Cleanest logic: if price gets there, the reason for the trade is gone.</p></div>
+    <div class="card"><span class="k mono">VOLATILITY</span><b>Volatility stop</b><p>Set from average true range, e.g. <span class="mono">entry − 2×ATR</span>. Suits mixed portfolios; keeps normal noise from tagging your stop.</p></div>
+    <div class="card"><span class="k mono">TIME</span><b>Time stop</b><p>If the trade hasn't moved as expected within N sessions, exit regardless of P&amp;L. A capital-efficiency tool; the cure for slow-boiled positions.</p></div>
+  </div>
+  <div class="note warn">
+    <span class="h mono">NEVER</span>
+    <p><strong>The percentage stop ("out at −10%") is the worst kind</strong> — 10% has nothing to do with market structure: it triggers inside normal noise or sits uselessly beyond the real level. <strong>The chart sets the stop; the stop sets the size — never the other way around.</strong></p>
+  </div>
+
+  <h3>B.5 Three portfolio-level ceilings</h3>
+  <ul>
+    <li><strong>Per-trade risk ≤ 1%</strong> for beginners; 2% once consistent — never more.</li>
+    <li><strong>Total open risk ≤ 3–5%</strong>: even if every open stop fires at once, the drawdown stays survivable.</li>
+    <li><strong>Correlation control</strong>: names in the same sector or driven by the same story count as <em>one position</em>. Five EV stocks aren't diversification — they're one bet, five times the size.</li>
+  </ul>
+  <p>Plus one psychological circuit breaker: <strong>at a 6–8% monthly drawdown, cut size or stop trading for a week</strong>. Judgment is worst during losing streaks; what you need then is a pause, not a comeback.</p>
+
+  <h3>B.6 The five most expensive mental traps</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Trap</th><th>Typical behavior</th><th>Counter-rule</th></tr></thead>
+      <tbody>
+        <tr><td><b>Disposition effect</b></td><td>Selling winners early, riding losers forever</td><td>Scaled take-profits + pre-placed stops: both ends run on rules</td></tr>
+        <tr><td><b>Sunk cost</b></td><td>"I'm down so much that selling makes it real"</td><td>Ask daily: flat today, would I buy it at this price?</td></tr>
+        <tr><td><b>Revenge trading</b></td><td>Re-entering immediately after a stop-out</td><td>Mandatory one-session cooldown after every stop</td></tr>
+        <tr><td><b>Confirmation bias</b></td><td>Reading only what supports the position</td><td>Before entry, write down "what would prove me wrong"</td></tr>
+        <tr><td><b>FOMO</b></td><td>Chasing whatever is running today</td><td>If it's not on the watchlist, it doesn't exist</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="c8" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">PRACTICE C · THE ONLY STAGE THAT MAKES YOU BETTER</span><span class="goal">Goal: turn every trade into a training rep</span></div>
+    <h2>Practice and review</h2>
+  </div>
+
+  <p>Reading makes you <em>know</em>; only drills and reviews make you <em>able</em>. This section hands you three usable artifacts: <strong>a drill method, a review sheet, and a 12-week training plan</strong>.</p>
+
+  <h3>C.1 Bar replay: the highest-yield drill</h3>
+
+  <figure>
+    <svg viewBox="0 0 880 320" role="img" aria-label="The three-step bar-replay drill: cover the future bars, write the full decision, reveal one bar and grade yourself — then loop">
+      <rect x="20" y="50" width="310" height="200" fill="none" stroke="var(--line)"></rect>
+      <g>
+        <line x1="45" y1="190" x2="45" y2="225" class="s-dn"></line><rect x="39" y="200" width="12" height="20" class="f-dn s-dn" stroke-width="1.2"></rect>
+        <line x1="75" y1="175" x2="75" y2="212" class="s-dn"></line><rect x="69" y="185" width="12" height="25" class="f-dn s-dn" stroke-width="1.2"></rect>
+        <line x1="105" y1="168" x2="105" y2="200" class="s-up"></line><rect x="99" y="185" width="12" height="10" class="body-fill s-up" stroke-width="1.2"></rect>
+        <line x1="135" y1="150" x2="135" y2="195" class="s-up"></line><rect x="129" y="160" width="12" height="35" class="body-fill s-up" stroke-width="1.2"></rect>
+        <line x1="165" y1="140" x2="165" y2="175" class="s-up"></line><rect x="159" y="148" width="12" height="12" class="body-fill s-up" stroke-width="1.2"></rect>
+        <line x1="195" y1="130" x2="195" y2="162" class="s-dn"></line><rect x="189" y="148" width="12" height="7" class="f-dn s-dn" stroke-width="1.2"></rect>
+        <line x1="225" y1="118" x2="225" y2="158" class="s-up"></line><rect x="219" y="125" width="12" height="30" class="body-fill s-up" stroke-width="1.2"></rect>
+      </g>
+      <rect x="240" y="51" width="89" height="198" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="5 4"></rect>
+      <text class="ttl" x="284" y="150" text-anchor="middle" font-size="30" fill="var(--accent)">?</text>
+      <text class="lbl-s" x="284" y="176" text-anchor="middle" fill="var(--accent)">future</text>
+      <text class="num-s" x="20" y="42" fill="var(--brass)">STEP 1</text>
+      <text class="lbl-s" x="20" y="274">Cover the right side; see only what has happened</text>
+
+      <path d="M 334 150 H 374" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+
+      <rect x="382" y="50" width="190" height="200" fill="var(--surface-2)" stroke="var(--line)"></rect>
+      <text class="num-s" x="382" y="42" fill="var(--brass)">STEP 2</text>
+      <text class="ttl" x="477" y="80" text-anchor="middle">Write the full decision</text>
+      <g class="lbl-s" fill="var(--ink-2)">
+        <text x="400" y="112">Direction: long / short / pass</text>
+        <text x="400" y="140">Entry: ______</text>
+        <text x="400" y="168">Stop: ______</text>
+        <text x="400" y="196">Target: ______</text>
+        <text x="400" y="228" fill="var(--accent)">Reason (which three tools align?)</text>
+      </g>
+      <text class="lbl-s" x="382" y="274">Ink first, result second — no edits after</text>
+
+      <path d="M 576 150 H 616" stroke="var(--ink-3)" stroke-width="1.4" fill="none" marker-end="url(#ar)"></path>
+
+      <rect x="624" y="50" width="190" height="200" fill="var(--surface-2)" stroke="var(--line)"></rect>
+      <text class="num-s" x="624" y="42" fill="var(--brass)">STEP 3</text>
+      <text class="ttl" x="719" y="80" text-anchor="middle">Reveal one bar, grade it</text>
+      <g class="lbl-s" fill="var(--ink-2)">
+        <text x="642" y="112">① Was the call right?</text>
+        <text x="642" y="140">② Was the process followed?</text>
+        <text x="642" y="168">③ Which step failed?</text>
+        <text x="642" y="200" fill="var(--down)">Right call + broken process</text>
+        <text x="642" y="222" fill="var(--down)">= still a failure</text>
+      </g>
+      <text class="lbl-s" x="624" y="274">30 bars a day; results in two weeks</text>
+
+      <path d="M 719 288 H 284 V 262" stroke="var(--brass)" stroke-width="1.3" stroke-dasharray="5 4" fill="none" marker-end="url(#ar-br)"></path>
+      <text class="num-s" x="500" y="306" text-anchor="middle" fill="var(--brass)">loop</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig C-1</span>The load-bearing part is STEP 2's <b>"ink first."</b> The brain is superb at inventing "I knew it all along" once the outcome is visible; only a written record made before the reveal gives the review something honest to grade against.</figcaption>
+  </figure>
+
+  <h3>C.2 The trade review sheet</h3>
+  <p>One row per trade — paper trades and replay drills included. Fields split deliberately into "before" and "after"; the before-group <strong>locks at order time</strong>.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Group</th><th>Field</th><th>How to fill</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="1"><b>Basic</b></td><td>Date / ticker / direction</td><td>—</td></tr>
+        <tr><td rowspan="5"><b>Before<br>(locked at entry)</b></td><td>Timeframe structure</td><td>Weekly / daily / hourly directions, each</td></tr>
+        <tr><td>Confluence evidence</td><td>List every tool that fired: trendline / MA / Fib / prior high-low / candle pattern</td></tr>
+        <tr><td>Entry · stop · target</td><td>All three numbers written together, before the order</td></tr>
+        <tr><td>R:R · size</td><td>Target distance ÷ stop distance; size derived from 1R</td></tr>
+        <tr><td>Falsifier</td><td>"What would prove me wrong" — one written sentence</td></tr>
+        <tr><td rowspan="4"><b>After</b></td><td>Exit price / result in R</td><td>Record in R, not currency</td></tr>
+        <tr><td>Process score (0–5)</td><td>Did you follow the SOP — regardless of profit</td></tr>
+        <tr><td>Error type</td><td>early entry / stop too tight / no stop / chased / moved target / none</td></tr>
+        <tr><td>One change for next time</td><td>Must be executable; "be more patient" doesn't count</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note tip">
+    <span class="h mono">SCORING</span>
+    <p>Review <strong>process first, P&amp;L second</strong>. Of the four combinations, only "good process + losing trade" is acceptable (normal probabilistic cost). The dangerous one is <strong>"broken process + winning trade"</strong> — it rewards a bad habit you will pay for at full size later.</p>
+  </div>
+
+  <h3>C.3 The 12-week training plan</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Weeks</th><th>Focus</th><th>Daily drill</th><th>Pass bar</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1–2</td><td>Candle elements, strength math, key patterns</td><td>Replay 30 bars; narrate the bull/bear strength of each</td><td>Can name the day's winner without looking at color</td></tr>
+        <tr><td class="n">3–4</td><td>MA mechanics, crosses, alignments</td><td>Annotate MA state on 3 charts daily</td><td>Instantly classify bullish / bearish / converged</td></tr>
+        <tr><td class="n">5–6</td><td>Granville's eight rules</td><td>Find 10 historical examples each of B1/B3/S1/S3</td><td>Examples survive bar-replay verification</td></tr>
+        <tr><td class="n">7–8</td><td>Trendlines, S/R, role reversal</td><td>Hand-draw 5 trendlines daily, marking the third touch</td><td>Your lines get respected by later price</td></tr>
+        <tr><td class="n">9</td><td>Fibonacci retracement &amp; extension</td><td>Apply to 10 historical swings; log where pullbacks actually stopped</td><td>Can explain what each retracement depth implies</td></tr>
+        <tr><td class="n">10</td><td>Elliott Wave and the three rules</td><td>Count 5 historical trends; primary + alternate counts</td><td>Can kill your own bad counts using the rules</td></tr>
+        <tr><td class="n">11</td><td>SOP and position sizing</td><td>Paper-trade the full SOP; fill the sheet each trade</td><td>Process score ≥ 4 for 10 straight trades</td></tr>
+        <tr><td class="n">12</td><td>Synthesis; write your rulebook</td><td>Distill 11 weeks of records into a personal rulebook</td><td>A third party could execute your rules verbatim</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Only after week 12 should real money begin — at <strong>the smallest tolerable size</strong>. The first live month's goal is not profit but <em>holding the process score above 4</em>.</p>
+
+  <h3>C.4 Three questions for the weekly review</h3>
+  <ol class="list">
+    <li><strong>How many times did I break my own rules this week?</strong> — exact count and context; "mostly fine" is not an answer.</li>
+    <li><strong>Of the losing trades, how many were process failures?</strong> — the share should fall week over week; if not, the rules themselves are unexecutable as written.</li>
+    <li><strong>Which one rule will I amend, and why?</strong> — at most one per week. Changing everything equals having no rules.</li>
+  </ol>
+</section>
+
+<section id="c9" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">EXTEND D · THE INDICATOR LIBRARY</span><span class="goal">Goal: know the algorithm, so you never worship the indicator</span></div>
+    <h2>15 major indicators: algorithms and usage</h2>
+  </div>
+
+  <p>Indicators are not oracles — each is <em>a piece of arithmetic run on price and volume</em>. Once you know the arithmetic, you know what a given indicator can answer and what it cannot; most "the indicator failed" complaints are really "I asked it a question it never computes."</p>
+  <p>Three families by purpose: <strong>trend-following</strong> (MA, EMA, MACD, DMI, SAR, the Bollinger midline) tracks direction; <strong>oscillators</strong> (KDJ, RSI, W%R, CCI, BIAS, DPO) measure overbought/oversold; <strong>volume/volatility</strong> (VOL, OBV, ATR, Bollinger bandwidth) measures participation and range. <em>Trend tools fail in ranges; oscillators fail in trends</em> — the first rule of choosing.</p>
+
+  <h3>D.1 The MA family: SMA, EMA, WMA</h3>
+  <p>Chapter 2's MA is the <strong>simple moving average (SMA)</strong> — equal weight to every day. Its cost: slow reactions, plus phantom jumps when old data drops out of the window. Two refinements:</p>
+  <div class="formula">
+    SMA(N) = (C₁ + C₂ + … + C_N) ÷ N        <span class="c">// equal weights</span><br>
+    WMA(N) = (N·C₁ + (N−1)·C₂ + … + 1·C_N) ÷ (N+…+1)  <span class="c">// linearly more weight to recent days</span><br>
+    EMA(N): today's EMA = α·close + (1−α)·yesterday's EMA, α = 2/(N+1)  <span class="c">// exponential decay; old data never fully leaves</span><br>
+    <span class="c">e.g. EMA12: α = 2/13 ≈ 0.154 — today's price gets 15.4% weight; 84.6% carries over from yesterday's EMA</span>
+  </div>
+  <p><strong>Usage difference</strong>: EMA hugs price closer and turns faster — better for short-term work; SMA is calmer and less noisy — better for position trades. MACD is built entirely from EMAs. Don't mix both types in one crossover system, or the signals will contradict each other.</p>
+
+  <h3>D.2 MACD — king of indicators</h3>
+  <p>MACD (Moving Average Convergence Divergence) measures <em>the gap between a fast and a slow EMA, and how that gap changes</em> — an accelerometer for the trend.</p>
+  <div class="formula">
+    DIF (fast line) = EMA12 − EMA26     <span class="c">// short-term momentum relative to long-term</span><br>
+    DEA (signal line) = 9-day EMA of DIF    <span class="c">// DIF smoothed once more, as the trigger baseline</span><br>
+    Histogram = 2 × (DIF − DEA)      <span class="c">// above zero and below; its growth and shrinkage is momentum itself</span>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 430" role="img" aria-label="MACD anatomy and bearish divergence: price makes a higher high while the histogram area shrinks, warning of momentum exhaustion">
+      <polyline points="60,150 130,100 200,132 290,60 360,96 450,42 520,80 560,66" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <text class="lbl-s" x="60" y="176">Price</text>
+      <line class="lead" x1="290" y1="60" x2="290" y2="250"></line>
+      <line class="lead" x1="450" y1="42" x2="450" y2="250"></line>
+      <text class="num-s" x="290" y="34" text-anchor="middle">High 1</text>
+      <text class="num-s" x="450" y="26" text-anchor="middle" fill="var(--down)">High 2 (higher)</text>
+
+      <line x1="40" y1="330" x2="860" y2="330" class="axis"></line>
+      <text class="num-s" x="866" y="334">zero line</text>
+      <g class="f-up" opacity="0.75">
+        <rect x="240" y="268" width="10" height="62"></rect><rect x="256" y="256" width="10" height="74"></rect>
+        <rect x="272" y="248" width="10" height="82"></rect><rect x="288" y="252" width="10" height="78"></rect>
+        <rect x="304" y="264" width="10" height="66"></rect><rect x="320" y="282" width="10" height="48"></rect>
+      </g>
+      <g class="f-up" opacity="0.75">
+        <rect x="404" y="292" width="10" height="38"></rect><rect x="420" y="284" width="10" height="46"></rect>
+        <rect x="436" y="278" width="10" height="52"></rect><rect x="452" y="282" width="10" height="48"></rect>
+        <rect x="468" y="292" width="10" height="38"></rect><rect x="484" y="304" width="10" height="26"></rect>
+      </g>
+      <g class="f-dn" opacity="0.75">
+        <rect x="130" y="330" width="10" height="30"></rect><rect x="146" y="330" width="10" height="44"></rect>
+        <rect x="162" y="330" width="10" height="34"></rect><rect x="178" y="330" width="10" height="20"></rect>
+        <rect x="530" y="330" width="10" height="24"></rect><rect x="546" y="330" width="10" height="40"></rect>
+        <rect x="562" y="330" width="10" height="52"></rect>
+      </g>
+      <path d="M 120 388 C 220 340, 260 296, 300 300 C 340 306, 380 330, 430 322 C 470 316, 500 330, 580 386" fill="none" stroke="var(--accent)" stroke-width="2"></path>
+      <path d="M 120 396 C 220 360, 270 318, 310 316 C 350 316, 390 334, 440 330 C 480 328, 510 342, 580 394" fill="none" stroke="var(--brass)" stroke-width="2"></path>
+      <text class="num-s" x="588" y="388" fill="var(--accent)">DIF</text>
+      <text class="num-s" x="588" y="404" fill="var(--brass)">DEA</text>
+
+      <path d="M 282 244 L 448 274" stroke="var(--down)" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#ar-dn)"></path>
+      <text class="lbl" x="650" y="270" fill="var(--down)">Bearish divergence</text>
+      <text class="lbl-s" x="650" y="292">Price: High 2 &gt; High 1</text>
+      <text class="lbl-s" x="650" y="312">Histogram area: second wave clearly smaller</text>
+      <text class="lbl-s" x="650" y="332" fill="var(--down)">→ momentum exhausted; trim ahead</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig D-1</span>MACD's three parts: DIF (fast), DEA (slow), histogram (twice their gap). The highest-value signal is <b>divergence</b>: price prints a higher high while that wave's histogram area shrinks versus the last — buyers pushed a higher price with less force. Bullish divergence is the mirror image at lows.</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card"><span class="k mono">SIGNAL 1</span><b>Crosses</b><p>DIF crossing above DEA is bullish, below is bearish. <strong>A bullish cross above the zero line</strong> (pullback ending inside an uptrend) far outweighs one below it (a bounce inside a decline).</p></div>
+    <div class="card"><span class="k mono">SIGNAL 2</span><b>Zero-line position</b><p>DIF and DEA above zero = EMA12 above EMA26 = bull regime. Long braiding around zero = MA convergence: wait for direction.</p></div>
+    <div class="card"><span class="k mono">SIGNAL 3</span><b>Histogram breathing</b><p>Bars lengthening = acceleration; bars shortening = fading momentum (price may still rise). The histogram's turn often leads price's turn.</p></div>
+    <div class="card"><span class="k mono">SIGNAL 4</span><b>Divergence (the big one)</b><p>Top/bottom divergence is MACD's most reliable use — and the standard tool for Chan Theory's beichi (chapter E). <strong>Divergence can repeat several times</strong>; always wait for the candle confirmation.</p></div>
+  </div>
+
+  <h3>D.3 KDJ — the stochastic</h3>
+  <p>KDJ answers: <em>where does today's close sit inside the last N days' range?</em> (N is usually 9.)</p>
+  <div class="formula">
+    RSV = (Close − N-day Low) ÷ (N-day High − N-day Low) × 100   <span class="c">// 0 = on the floor of the range, 100 = on its ceiling</span><br>
+    K = ⅔ × K_prev + ⅓ × RSV     <span class="c">// smoothed RSV</span><br>
+    D = ⅔ × D_prev + ⅓ × K       <span class="c">// K smoothed again</span><br>
+    J = 3K − 2D                  <span class="c">// amplifies K's deviation from D; most sensitive, can leave 0–100</span>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 860 300" role="img" aria-label="KDJ: readings above 80 are overbought, below 20 oversold; a bullish cross inside the oversold zone is the strongest buy signal">
+      <rect x="60" y="60" width="740" height="44" fill="var(--down)" opacity="0.08"></rect>
+      <rect x="60" y="196" width="740" height="44" fill="var(--up)" opacity="0.08"></rect>
+      <line x1="60" y1="104" x2="800" y2="104" class="gridline" stroke-dasharray="4 4"></line>
+      <line x1="60" y1="196" x2="800" y2="196" class="gridline" stroke-dasharray="4 4"></line>
+      <text class="num-s" x="808" y="108">80</text>
+      <text class="num-s" x="808" y="200">20</text>
+      <text class="num-s" x="66" y="78" fill="var(--down)">Overbought: &gt;80 — pullback risk, but can pin here for weeks in strong trends</text>
+      <text class="num-s" x="66" y="232" fill="var(--up)">Oversold: &lt;20 — watch for bounces</text>
+      <path d="M 80 90 C 140 100, 180 160, 230 210 C 270 246, 320 236, 370 208 C 430 176, 480 120, 540 86 C 590 62, 640 70, 700 92 C 740 106, 770 128, 790 150" fill="none" stroke="var(--accent)" stroke-width="2.2"></path>
+      <path d="M 80 110 C 140 110, 190 150, 240 192 C 285 228, 330 226, 380 206 C 440 180, 490 138, 550 104 C 600 78, 650 76, 705 88 C 745 96, 772 112, 790 130" fill="none" stroke="var(--brass)" stroke-width="2"></path>
+      <circle cx="329" cy="228" r="8" fill="none" stroke="var(--up)" stroke-width="2.2"></circle>
+      <path d="M 329 262 V 244" stroke="var(--up)" stroke-width="1.4" fill="none" marker-end="url(#ar-up)"></path>
+      <text class="lbl" x="329" y="282" text-anchor="middle" fill="var(--up)">Bullish cross inside oversold → strongest signal</text>
+      <circle cx="668" cy="80" r="8" fill="none" stroke="var(--down)" stroke-width="2.2"></circle>
+      <text class="lbl-s" x="668" y="52" text-anchor="middle" fill="var(--down)">Bearish cross inside overbought → trim</text>
+      <text class="num-s" x="796" y="154" fill="var(--accent)">K</text>
+      <text class="num-s" x="796" y="132" fill="var(--brass)">D</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig D-2</span>KDJ signal strength is set by <b>location</b>: K crossing D means most below 20 and little near 50. J punching above 100 or below 0 flags short-term extremes.</figcaption>
+  </figure>
+
+  <div class="note warn">
+    <span class="h mono">PINNING</span>
+    <p>KDJ's biggest trap is <strong>pinning</strong>: in a one-way trend it can ride the overbought band for weeks, making every "overbought sell" wrong. <strong>KDJ belongs in ranges and in timing the end of pullbacks — never as a counter-trend trigger inside a runaway trend.</strong> Decide trend-vs-range first, with MA alignment (ch. 2) and ADX (D.7).</p>
+  </div>
+
+  <h3>D.4 RSI — relative strength index</h3>
+  <div class="formula">
+    RSI(N) = average N-day gain ÷ (average gain + average loss) × 100    <span class="c">// N commonly 6, 12, 14, 24</span>
+  </div>
+  <p><strong>Reading</strong>: 50 divides bull from bear; above 70 overbought, below 30 oversold (80/20 in strong markets). <strong>Like KDJ but smoother</strong> — less pinning, better as confirmation: RSI holding above 50 confirms a bullish structure; RSI divergence stacking with MACD divergence is a heavyweight topping signal.</p>
+
+  <h3>D.5 BOLL — Bollinger Bands</h3>
+  <p>Bollinger Bands use the statistical standard deviation to draw "how far is price from its average" directly on the chart:</p>
+  <div class="formula">
+    Middle band MB = 20-day SMA<br>
+    Upper band UP = MB + 2 × σ(20)     <span class="c">// σ = std-dev of the last 20 closes</span><br>
+    Lower band DN = MB − 2 × σ(20)     <span class="c">// ~95% of prices fall inside the bands, statistically</span>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 340" role="img" aria-label="Bollinger squeeze and expansion: narrowing bandwidth precedes a breakout; walking the upper band is a mark of strength">
+      <path d="M 60 120 C 140 128, 220 140, 300 142 C 360 143, 400 140, 440 128 C 520 92, 620 40, 720 24 C 780 16, 830 20, 860 28" fill="none" stroke="var(--accent)" stroke-width="1.8"></path>
+      <path d="M 60 170 C 140 172, 220 176, 300 177 C 370 178, 420 176, 470 168 C 550 148, 640 108, 730 84 C 790 70, 840 68, 860 70" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-dasharray="6 4"></path>
+      <path d="M 60 220 C 140 216, 220 212, 300 212 C 370 212, 430 212, 490 208 C 570 200, 660 176, 740 144 C 795 122, 840 114, 860 112" fill="none" stroke="var(--accent)" stroke-width="1.8"></path>
+      <text class="num-s" x="806" y="20" fill="var(--accent)">upper +2σ</text>
+      <text class="num-s" x="806" y="56" fill="var(--ink-3)">middle MA20</text>
+      <text class="num-s" x="806" y="100" fill="var(--accent)">lower −2σ</text>
+      <polyline points="70,180 120,160 170,192 220,168 270,196 320,170 370,160 420,146 470,130 520,100 570,66 620,84 670,52 720,66 770,38 820,48" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></polyline>
+      <rect x="130" y="132" width="200" height="92" fill="none" stroke="var(--brass)" stroke-width="1.3" stroke-dasharray="5 4"></rect>
+      <text class="lbl-s" x="230" y="250" text-anchor="middle" fill="var(--brass)">Squeeze: volatility compressed</text>
+      <text class="lbl-s" x="230" y="270" text-anchor="middle">The narrower the band, the bigger the coming move — wait for direction, don't guess it</text>
+      <path d="M 560 226 C 590 190, 610 140, 622 100" fill="none" stroke="var(--up)" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#ar-up)"></path>
+      <text class="lbl-s" x="560" y="248" text-anchor="middle" fill="var(--up)">Expansion + price hugging the upper band = strength</text>
+      <text class="lbl-s" x="560" y="268" text-anchor="middle">While "walking the band," touching it is not a sell — losing the midline is the exit cue</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig D-3</span>The two states of the bands: in a <b>squeeze</b> the bands pinch inward — the eve of a move (cross-check with MA convergence); after <b>expansion</b>, price riding the upper band ("walking the band") is the strongest trend behavior there is. Fade the band edges in ranges; never in trends — classify the state first, then pick the play.</figcaption>
+  </figure>
+
+  <h3>D.6 DPO — detrended price oscillator</h3>
+  <p>DPO does something unusual: <em>it subtracts the trend from price, leaving only the cyclical wiggle</em>.</p>
+  <div class="formula">
+    DPO = Close − SMA(N) shifted back (N/2 + 1) days     <span class="c">// N usually 20: close minus the MA20 from 11 days ago</span><br>
+    <span class="c">Shifting the MA half a cycle before subtracting cancels the long trend; what's left oscillates around zero</span>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 880 330" role="img" aria-label="How DPO detrends: price minus the shifted moving average yields a cyclical oscillation around zero">
+      <path d="M 60 200 C 120 170, 150 190, 210 160 C 270 130, 300 156, 360 120 C 420 86, 450 112, 510 76 C 570 44, 610 66, 670 36" fill="none" stroke="var(--ink-2)" stroke-width="1.9"></path>
+      <path d="M 60 210 C 160 190, 300 150, 440 110 C 540 82, 620 60, 690 44" fill="none" stroke="var(--brass)" stroke-width="1.8" stroke-dasharray="6 4"></path>
+      <text class="lbl-s" x="700" y="30">Price: trend + cycle</text>
+      <text class="lbl-s" x="700" y="52" fill="var(--brass)">Shifted MA (pure trend)</text>
+      <path d="M 380 130 V 96" stroke="var(--accent)" stroke-width="1.3" fill="none" marker-end="url(#ar-ac)"></path>
+      <text class="num-s" x="330" y="160" fill="var(--accent)">their difference → DPO</text>
+      <line x1="60" y1="280" x2="820" y2="280" class="axis"></line>
+      <text class="num-s" x="826" y="284">0</text>
+      <path d="M 60 268 C 100 250, 140 246, 180 262 C 220 280, 250 306, 300 302 C 350 298, 380 262, 430 254 C 480 248, 510 276, 560 296 C 600 310, 640 300, 690 272 C 730 252, 770 250, 810 262" fill="none" stroke="var(--accent)" stroke-width="2"></path>
+      <text class="lbl-s" x="140" y="238" fill="var(--accent)">DPO high ≈ cyclical pullback due</text>
+      <text class="lbl-s" x="560" y="322" fill="var(--accent)">DPO low ≈ cyclical buy window</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig D-4</span>Price (solid) climbs steadily, but with the trend removed, DPO (below) exposes a stable rhythm of swings. <b>DPO's job is measuring cycle length and locating pullback buys inside an established trend</b> — it is completely blind to the trend itself and must be paired with a trend tool.</figcaption>
+  </figure>
+
+  <h3>D.7 The rest of the library, at a glance</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Indicator</th><th>Core algorithm</th><th>Main use</th><th>Where it fails</th></tr></thead>
+      <tbody>
+        <tr><td><b>BIAS</b></td><td class="n">(C − MA) ÷ MA × 100%</td><td>Overstretched distance from the MA snaps back; ±6% (MA6) / ±9% (MA12) common alert lines</td><td>Strong trends can stay stretched for weeks</td></tr>
+        <tr><td><b>CCI</b></td><td class="n">(TP − MA(TP)) ÷ (0.015 × mean abs deviation), TP=(H+L+C)/3</td><td>±100 marks the normal zone; ride moves beyond +100, exit when it drops back inside</td><td>Whipsaws across ±100 in ranges</td></tr>
+        <tr><td><b>Williams %R</b></td><td class="n">(N-day High − C) ÷ (N-day High − N-day Low) × 100</td><td>KDJ's mirror image; faster, good for short-term turning points</td><td>Same pinning problem as KDJ</td></tr>
+        <tr><td><b>ATR</b></td><td class="n">TR = max(H−L, |H−C_prev|, |L−C_prev|); ATR = N-day average of TR</td><td>No direction — pure volatility: volatility stops (2×ATR), volatility-scaled sizing</td><td>None — it never claimed to give direction</td></tr>
+        <tr><td><b>OBV</b></td><td class="n">Add volume on up days, subtract on down days, cumulate</td><td>Volume confirmation: OBV making new highs with price = healthy; price high without OBV high = volume divergence</td><td>Insensitive to low-volume grinds</td></tr>
+        <tr><td><b>VOL / volume MAs</b></td><td class="n">Volume bars + MA5/MA10 of volume</td><td>Breakouts need volume (&gt;1.5× average); pullbacks should be quiet; climax volume often marks climax price</td><td>Splits and block trades distort single days</td></tr>
+        <tr><td><b>DMI / ADX</b></td><td class="n">+DI / −DI measure directional pressure; ADX smooths their spread</td><td><strong>ADX &gt; 25 = trending (use trend tools); ADX &lt; 20 = ranging (use oscillators)</strong>; +DI over −DI to go long</td><td>ADX turns are laggy</td></tr>
+        <tr><td><b>SAR</b></td><td class="n">Parabolic dots accelerate toward price (AF 0.02 → 0.2)</td><td>Dots below = stay long; price crossing the dots = flip/exit. A built-in trailing stop</td><td>Flips constantly in ranges — expensive</td></tr>
+        <tr><td><b>EMA (EXPMA)</b></td><td class="n">See D.1</td><td>12/50 EMA crossovers replace SMA crosses, signaling 1–3 bars earlier</td><td>Faster also means more false starts</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>D.8 Principles of combining indicators</h3>
+  <ul>
+    <li><strong>First classify the regime</strong> with ADX or MA alignment: trending → MACD + MAs + SAR; ranging → KDJ/RSI + Bollinger extremes.</li>
+    <li><strong>Only cross-family combinations add information</strong>: MACD + KDJ + RSI together tell you little (all price-derived, highly correlated); MACD (trend) + KDJ (oscillator) + OBV (volume) are three genuinely independent views.</li>
+    <li><strong>Indicators lag or coincide with price — always</strong>: they are functions of price and contain no future. Their value is making price information <em>standardized and comparable</em>, not prophetic.</li>
+    <li>Three indicators per screen, maximum. More never makes you righter — it only guarantees you can always find the one that agrees with you.</li>
+  </ul>
+</section>
+
+<section id="c10" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">EXTEND E · STRUCTURAL ANALYSIS</span><span class="goal">Goal: grasp the recursion fractal → stroke → segment → pivot</span></div>
+    <h2>Chan Theory — the geometry of price moves</h2>
+  </div>
+
+  <p>Chan Theory (缠论, "Chanlun") is the most influential original technical framework to come out of the Chinese-speaking world. Its key difference from Elliott Wave: waves are <em>counted</em> (subjectively), while Chan builds everything bottom-up from <em>strict definitions</em> — starting at candle inclusion and constructing fractals, strokes, segments, and pivots, each step with an explicit test.</p>
+  <p>The core idea in one line: <strong>every move at every level must complete itself</strong> — a move is either a "trend" or a "consolidation," each rigorously defined by the number and position of its pivots, and a completed move must hand off to the next.</p>
+
+  <h3>E.1 From candles to strokes: inclusion and fractals</h3>
+  <p><strong>Step 1 — inclusion processing</strong>: when one of two adjacent candles fully contains the other's range, merge them in the direction of travel (rising: take the higher high and higher low; falling: lower low and lower high). Only an inclusion-free sequence can define fractals.</p>
+  <p><strong>Step 2 — fractals</strong>: among three adjacent candles, if the middle one has the highest high <em>and</em> the highest low, that is a <strong>top fractal</strong>; the mirror image is a <strong>bottom fractal</strong>.</p>
+  <p><strong>Step 3 — strokes</strong>: a top fractal and a bottom fractal separated by at least one independent candle (≥5 candles total including both fractals) connect into a <strong>stroke</strong> — Chan's smallest unit of movement.</p>
+
+  <figure>
+    <svg viewBox="0 0 900 340" role="img" aria-label="Chan Theory building blocks: the three-candle top fractal and bottom fractal, and strokes connecting fractals">
+      <text class="ttl" x="150" y="30" text-anchor="middle">Top fractal</text>
+      <line x1="100" y1="120" x2="100" y2="200" class="s-up"></line><rect x="92" y="132" width="16" height="52" class="body-fill s-up" stroke-width="1.5"></rect>
+      <line x1="150" y1="70" x2="150" y2="160" class="s-up"></line><rect x="142" y="84" width="16" height="52" class="body-fill s-up" stroke-width="1.5"></rect>
+      <line x1="200" y1="112" x2="200" y2="206" class="s-dn"></line><rect x="192" y="124" width="16" height="58" class="f-dn s-dn" stroke-width="1.5"></rect>
+      <line class="lead" x1="70" y1="70" x2="230" y2="70"></line>
+      <text class="num-s" x="150" y="58" text-anchor="middle" fill="var(--down)">middle candle: highest high AND highest low</text>
+      <text class="lbl-s" x="150" y="240" text-anchor="middle">at the end of a rise → potential turn</text>
+
+      <text class="ttl" x="440" y="30" text-anchor="middle">Bottom fractal</text>
+      <line x1="390" y1="90" x2="390" y2="176" class="s-dn"></line><rect x="382" y="102" width="16" height="56" class="f-dn s-dn" stroke-width="1.5"></rect>
+      <line x1="440" y1="140" x2="440" y2="228" class="s-dn"></line><rect x="432" y="154" width="16" height="56" class="f-dn s-dn" stroke-width="1.5"></rect>
+      <line x1="490" y1="96" x2="490" y2="190" class="s-up"></line><rect x="482" y="108" width="16" height="58" class="body-fill s-up" stroke-width="1.5"></rect>
+      <line class="lead" x1="360" y1="228" x2="520" y2="228"></line>
+      <text class="num-s" x="440" y="248" text-anchor="middle" fill="var(--up)">middle candle: lowest low AND lowest high</text>
+      <text class="lbl-s" x="440" y="270" text-anchor="middle">at the end of a fall → potential turn</text>
+
+      <text class="ttl" x="740" y="30" text-anchor="middle">Stroke = top ↔ bottom fractal</text>
+      <polyline points="620,220 700,90 780,190 860,60" fill="none" stroke="var(--accent)" stroke-width="2.4"></polyline>
+      <circle cx="700" cy="90" r="6" fill="none" stroke="var(--down)" stroke-width="2"></circle>
+      <circle cx="780" cy="190" r="6" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <circle cx="620" cy="220" r="6" fill="none" stroke="var(--up)" stroke-width="2"></circle>
+      <text class="num-s" x="700" y="74" text-anchor="middle" fill="var(--down)">top</text>
+      <text class="num-s" x="780" y="212" text-anchor="middle" fill="var(--up)">bottom</text>
+      <text class="num-s" x="614" y="242" text-anchor="middle" fill="var(--up)">bottom</text>
+      <text class="lbl-s" x="740" y="270" text-anchor="middle">each stroke ≥ 5 candles (both fractals included)</text>
+      <text class="lbl-s" x="740" y="290" text-anchor="middle">strokes build segments; segments build higher levels</text>
+    </svg>
+    <figcaption><span class="fig-num">Fig E-1</span>Chan's construction chain: <b>candles (after inclusion) → fractals → strokes → segments → the move at this level</b>. Every level is assembled strictly from the level below — this recursion turns "where exactly are we right now" into an objectively answerable question, instead of Elliott-style subjective counting.</figcaption>
+  </figure>
+
+  <h3>E.2 The pivot (zhongshu) — Chan's heart</h3>
+  <p>The <strong>pivot</strong> is defined as <em>the overlap of at least three consecutive sub-level segments</em>. Take the first three: pivot top ZG = the lowest of their highs; pivot bottom ZD = the highest of their lows.</p>
+  <p>A pivot is the zone where bulls and bears fight to a temporary standstill — and once formed, it becomes both a gravity well and the classification yardstick for what follows:</p>
+  <ul>
+    <li><strong>Consolidation</strong>: the whole move contains <em>one</em> pivot.</li>
+    <li><strong>Trend</strong>: <em>two or more</em> pivots in the same direction (each higher = uptrend; each lower = downtrend).</li>
+  </ul>
+
+  <h3>E.3 The three types of buy points</h3>
+  <p>Chan reduces every tradeable location to three buy types (sells are symmetric):</p>
+
+  <figure>
+    <svg viewBox="0 0 900 420" role="img" aria-label="Chan pivot and the three buy points: type 1 at the divergence low, type 2 where the pullback fails to make a new low, type 3 where the retest holds above the pivot">
+      <rect x="270" y="170" width="240" height="90" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3" stroke-dasharray="6 4"></rect>
+      <text class="lbl-s" x="390" y="162" text-anchor="middle" fill="var(--accent)">Pivot (overlap of ≥3 sub-level segments)</text>
+      <text class="num-s" x="516" y="180" fill="var(--accent)">ZG top</text>
+      <text class="num-s" x="516" y="262" fill="var(--accent)">ZD bottom</text>
+      <polyline points="60,80 130,220 170,160 230,330 290,240 330,300 390,180 430,250 470,190 510,255 570,150 620,215 700,90 750,150 850,40" fill="none" stroke="var(--ink-2)" stroke-width="2"></polyline>
+      <circle cx="230" cy="330" r="7" fill="var(--up)"></circle>
+      <text class="lbl" x="230" y="366" text-anchor="middle" fill="var(--up)">Buy 1</text>
+      <text class="lbl-s" x="230" y="388" text-anchor="middle">divergence at the end of the decline</text>
+      <text class="lbl-s" x="230" y="406" text-anchor="middle">earliest · riskiest · biggest payoff</text>
+      <circle cx="330" cy="300" r="7" fill="var(--up)"></circle>
+      <text class="lbl" x="330" y="336" text-anchor="middle" fill="var(--up)">Buy 2</text>
+      <text class="lbl-s" x="352" y="358" text-anchor="middle">sub-level pullback fails to make a new low</text>
+      <circle cx="620" cy="215" r="7" fill="var(--up)"></circle>
+      <text class="lbl" x="648" y="240" text-anchor="middle" fill="var(--up)">Buy 3</text>
+      <text class="lbl-s" x="672" y="262" text-anchor="middle">after leaving the pivot, the retest never re-enters it</text>
+      <text class="lbl-s" x="672" y="282" text-anchor="middle">confirms a new leg up — the highest win rate</text>
+      <path d="M 205 315 C 180 290, 170 260, 176 235" fill="none" stroke="var(--brass)" stroke-width="1.2" stroke-dasharray="4 3"></path>
+      <text class="num-s" x="120" y="250" fill="var(--brass)">decline arriving from the top-left high</text>
+      <line class="lead" x1="620" y1="208" x2="620" y2="260"></line>
+    </svg>
+    <figcaption><span class="fig-num">Fig E-2</span>The essence of the three: <b>Buy 1 bets on the turn</b> (divergence), <b>Buy 2 confirms the turn</b> (no new low), <b>Buy 3 confirms the new trend</b> (retest holds above the pivot). From 1 to 3 the win rate rises while the payoff falls — beginners should start with Buy 3, then Buy 2, and leave Buy 1 until divergence judgment is solid.</figcaption>
+  </figure>
+
+  <h3>E.4 Beichi — measuring exhaustion</h3>
+  <p><strong>Beichi</strong> (背驰, "divergence/exhaustion") means a new leg makes a new high (or low) with <em>less force than the previous comparable leg</em>. The standard force gauge is MACD: compare the two legs' <strong>histogram areas</strong> (or DIF peak heights) — a clearly smaller area on the newer leg is beichi. This is the same phenomenon as D.2's MACD divergence, but Chan adds stricter comparability conditions:</p>
+  <ul>
+    <li>Only two legs of the <strong>same level, same direction, separated by the same pivot</strong> are comparable — wave 3 vs wave 5 is a valid comparison; legs from different levels are not.</li>
+    <li><strong>Consolidation beichi</strong> (two weakening probes around one pivot) is minor — expect only a reaction; <strong>trend beichi</strong> (after two or more pivots) is what precedes meaningful reversals.</li>
+    <li>Beichi = exhausted momentum ≠ instant reversal. Confirmation is always a sub-level reversal structure (an opposite fractal/stroke) — never the beichi alone.</li>
+  </ul>
+
+  <h3>E.5 Levels and recursion</h3>
+  <p>Chan's "level" is not simply a chart timeframe but a structural recursion: <em>one segment at this level is built from several sub-level segments; a pivot at this level is built from overlapping sub-level segments</em>. The practical shortcut: use 5-min / 30-min / daily / weekly as your operating ladder — find pivots and buy points on the 30-min, confirm beichi and turns on the 5-min, set the campaign direction on the daily. This is the same idea as chapter A's multi-timeframe confluence, expressed structurally.</p>
+
+  <div class="note warn">
+    <span class="h mono">HOW TO STUDY IT</span>
+    <p>The full system is vast (the original ran to 108 lessons), with far more definitions than this section covers. A beginner needs exactly four things: ① fractal and stroke marking (trains structural vision); ② pivot identification (locates the battlegrounds); ③ Buy/Sell type 3 (the most tradeable signal); ④ MACD-assisted beichi. Avoid the rabbit hole of segment-division debates — that is the fork between tools serving your trading and trading serving your tools.</p>
+  </div>
+</section>
+
+<section id="c11" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">EXTEND F · DERIVATIVES</span><span class="goal">Goal: read an option's payoff structure and know where its risks live</span></div>
+    <h2>Options — strategies, risks, and worked examples</h2>
+  </div>
+
+  <p>An option is a <em>contract of rights</em>: the buyer pays a <strong>premium</strong> for the right to buy (<strong>call</strong>) or sell (<strong>put</strong>) the underlying at the <strong>strike price</strong> on (or before) the <strong>expiry date</strong> — a right, never an obligation. The seller collects the premium and carries the obligation to deliver if assigned.</p>
+
+  <h3>F.1 Five core concepts</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Concept</th><th>Meaning</th><th>Key point</th></tr></thead>
+      <tbody>
+        <tr><td><b>Strike K</b></td><td>The agreed transaction price</td><td>Its position versus spot makes the option ITM (in the money), ATM, or OTM</td></tr>
+        <tr><td><b>Premium</b></td><td>The option's price = intrinsic + time value</td><td>Intrinsic = what immediate exercise yields; the rest is time value, decaying to zero at expiry</td></tr>
+        <tr><td><b>Expiry</b></td><td>When the right lapses</td><td>American style allows early exercise, European only at expiry; decay accelerates near the end</td></tr>
+        <tr><td><b>Implied volatility (IV)</b></td><td>The volatility the market's price implies</td><td>Higher IV = dearer premium; IV inflates before events and collapses after (IV crush)</td></tr>
+        <tr><td><b>Multiplier</b></td><td>Units of underlying per contract</td><td>US equity options: 1 contract = 100 shares; all P&amp;L scales by it</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>F.2 Premium anatomy: ITM, ATM, OTM</h3>
+  <p>Option price = <strong>intrinsic value + time value</strong>. This decomposition underlies every strategy that follows. With the stock at $100, compare three calls of the same expiry at different strikes:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Contract</th><th>Moneyness</th><th>Premium</th><th>Intrinsic</th><th>Time value</th><th>Character</th></tr></thead>
+      <tbody>
+        <tr><td class="n">K = 90 call</td><td><b>ITM</b></td><td class="n">11.50</td><td class="n">10.00</td><td class="n">1.50</td><td>Expensive, but mostly "real money"; high delta — trades like the stock</td></tr>
+        <tr><td class="n">K = 100 call</td><td><b>ATM</b></td><td class="n">4.00</td><td class="n">0</td><td class="n">4.00</td><td><strong>Maximum time value</strong> — peak uncertainty, so sellers charge the most here</td></tr>
+        <tr><td class="n">K = 110 call</td><td><b>OTM</b></td><td class="n">1.20</td><td class="n">0</td><td class="n">1.20</td><td>Cheap, highest leverage — but 100% time value, and most likely to expire at zero</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Three principles fall straight out of the table:</p>
+  <ul>
+    <li><strong>Time value peaks at the money</strong> and shrinks toward deep ITM and deep OTM — which is why sellers love writing near-the-money contracts (maximum rent), and why buying deep OTM is buying lottery tickets.</li>
+    <li><strong>Time value only ever flows to the seller</strong>: up day or down day, you wake up with a little less of it. A buyer profits only when intrinsic value grows <em>faster</em> than time value bleeds.</li>
+    <li><strong>Volatility is the second price axis</strong>: the same contract can double in premium when IV goes from 30% to 60%. Before buying, check where IV sits in its own history — <em>low IV favors buying, high IV favors selling</em>; direction is the second question, not the first.</li>
+  </ul>
+
+  <h3>F.3 The Greeks: four dials of risk</h3>
+  <div class="cards">
+    <div class="card"><span class="k mono">DELTA Δ</span><b>Direction sensitivity</b><p>Option price change per $1 move in the underlying. ATM ≈ 0.5; deep ITM → 1. Also a rough read of "probability of expiring ITM."</p></div>
+    <div class="card"><span class="k mono">THETA Θ</span><b>Time decay</b><p>Time value lost per day. <strong>Buyers pay rent on time daily; sellers collect it</strong> — fastest in the final 30 days.</p></div>
+    <div class="card"><span class="k mono">VEGA ν</span><b>Volatility sensitivity</b><p>Premium change per 1-point IV move. Buying options = long volatility; buy when IV is already rich and you can lose even when right on direction.</p></div>
+    <div class="card"><span class="k mono">GAMMA Γ</span><b>Delta's acceleration</b><p>How fast delta itself changes. Near-expiry ATM options carry huge gamma — small underlying moves flip the P&amp;L violently.</p></div>
+  </div>
+
+  <h3>F.4 The four basic positions and their payoffs</h3>
+
+  <figure>
+    <svg viewBox="0 0 900 560" role="img" aria-label="Expiry payoff diagrams of the four basic option positions: long call, long put, covered call, protective put">
+      <g>
+        <text class="ttl" x="230" y="28" text-anchor="middle">① Long call</text>
+        <line x1="60" y1="140" x2="400" y2="140" class="axis"></line>
+        <line x1="60" y1="60" x2="60" y2="220" class="axis"></line>
+        <polyline points="70,180 230,180 390,60" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <line class="lead" x1="230" y1="140" x2="230" y2="188"></line>
+        <text class="num-s" x="230" y="204" text-anchor="middle">K</text>
+        <text class="num-s" x="76" y="176" fill="var(--down)">max loss = premium</text>
+        <text class="num-s" x="300" y="76" fill="var(--up)">uncapped upside</text>
+        <text class="lbl-s" x="230" y="236" text-anchor="middle">Bet on a big rally · limited loss · pays theta daily</text>
+      </g>
+      <g>
+        <text class="ttl" x="670" y="28" text-anchor="middle">② Long put</text>
+        <line x1="500" y1="140" x2="840" y2="140" class="axis"></line>
+        <line x1="500" y1="60" x2="500" y2="220" class="axis"></line>
+        <polyline points="510,64 670,180 830,180" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <line class="lead" x1="670" y1="140" x2="670" y2="188"></line>
+        <text class="num-s" x="670" y="204" text-anchor="middle">K</text>
+        <text class="num-s" x="710" y="176" fill="var(--down)">max loss = premium</text>
+        <text class="num-s" x="516" y="56" fill="var(--up)">gains grow as price falls</text>
+        <text class="lbl-s" x="670" y="236" text-anchor="middle">Bet on a big drop / insurance for holdings</text>
+      </g>
+      <g>
+        <text class="ttl" x="230" y="298" text-anchor="middle">③ Covered call</text>
+        <line x1="60" y1="420" x2="400" y2="420" class="axis"></line>
+        <line x1="60" y1="330" x2="60" y2="500" class="axis"></line>
+        <polyline points="70,496 250,384 390,384" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <polyline points="70,480 250,368 390,300" fill="none" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="5 4"></polyline>
+        <line class="lead" x1="250" y1="384" x2="250" y2="440"></line>
+        <text class="num-s" x="250" y="456" text-anchor="middle">K</text>
+        <text class="num-s" x="286" y="374" fill="var(--up)">gain capped at K + premium</text>
+        <text class="num-s" x="130" y="492" fill="var(--down)">downside ≈ owning stock (cushioned by premium)</text>
+        <text class="num-s" x="256" y="316" text-anchor="end" fill="var(--ink-3)">stock only (dashed)</text>
+        <text class="lbl-s" x="230" y="516" text-anchor="middle">Own 100 shares + sell 1 call · income when mildly bullish</text>
+      </g>
+      <g>
+        <text class="ttl" x="670" y="298" text-anchor="middle">④ Protective put</text>
+        <line x1="500" y1="420" x2="840" y2="420" class="axis"></line>
+        <line x1="500" y1="330" x2="500" y2="500" class="axis"></line>
+        <polyline points="510,452 650,452 830,320" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <polyline points="510,500 650,452 830,304" fill="none" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="5 4"></polyline>
+        <line class="lead" x1="650" y1="420" x2="650" y2="468"></line>
+        <text class="num-s" x="650" y="484" text-anchor="middle">K</text>
+        <text class="num-s" x="516" y="444" fill="var(--up)">max loss locked in</text>
+        <text class="num-s" x="700" y="330" fill="var(--up)">full upside (minus the premium)</text>
+        <text class="lbl-s" x="670" y="516" text-anchor="middle">Own shares + buy 1 put · insurance costing the premium</text>
+      </g>
+    </svg>
+    <figcaption><span class="fig-num">Fig F-1</span>Expiry payoff diagrams (x-axis = underlying at expiry, y-axis = P&amp;L; the kink sits at strike K). Every complex strategy is a sum of these four building blocks. Three questions to read any payoff: <b>maximum loss? maximum gain? breakeven?</b> — no order goes out before all three are answered.</figcaption>
+  </figure>
+
+  <h3>F.5 Common combination strategies</h3>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="Two combination payoffs: the bull call spread caps both cost and gain; the long straddle profits from a large move either way">
+      <g>
+        <text class="ttl" x="230" y="28" text-anchor="middle">Bull call spread</text>
+        <line x1="60" y1="150" x2="400" y2="150" class="axis"></line>
+        <polyline points="70,196 180,196 300,96 390,96" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <line class="lead" x1="180" y1="150" x2="180" y2="204"></line>
+        <line class="lead" x1="300" y1="96" x2="300" y2="204"></line>
+        <text class="num-s" x="180" y="220" text-anchor="middle">K1 buy call</text>
+        <text class="num-s" x="300" y="220" text-anchor="middle">K2 sell call</text>
+        <text class="num-s" x="80" y="188" fill="var(--down)">max loss = net premium</text>
+        <text class="num-s" x="310" y="88" fill="var(--up)">max gain = (K2−K1) − net premium</text>
+        <text class="lbl-s" x="230" y="252" text-anchor="middle">Mildly bullish · selling K2 pays for most of the theta</text>
+      </g>
+      <g>
+        <text class="ttl" x="670" y="28" text-anchor="middle">Long straddle</text>
+        <line x1="500" y1="150" x2="840" y2="150" class="axis"></line>
+        <polyline points="510,60 670,204 830,60" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <line class="lead" x1="670" y1="150" x2="670" y2="212"></line>
+        <text class="num-s" x="670" y="228" text-anchor="middle">K (buy call + put, same strike)</text>
+        <text class="num-s" x="700" y="200" fill="var(--down)">max loss = both premiums</text>
+        <text class="num-s" x="516" y="56" fill="var(--up)">crash pays</text>
+        <text class="num-s" x="792" y="56" fill="var(--up)">melt-up pays</text>
+        <text class="lbl-s" x="670" y="252" text-anchor="middle">Bet volatility, not direction · needs a move &gt; both premiums · fears IV crush</text>
+      </g>
+    </svg>
+    <figcaption><span class="fig-num">Fig F-2</span>Combinations exist to <b>sell off the risk you don't want and pocket the difference</b>: a spread trades away the melt-up tail for lower cost; a straddle trades away direction to bet purely on movement. No free lunches — every structure is a bundle of trade-offs.</figcaption>
+  </figure>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="Two advanced payoffs: a collar locks a stock position inside a band, and an iron condor collects net credit while price stays between the short strikes">
+      <g>
+        <text class="ttl" x="230" y="28" text-anchor="middle">Collar</text>
+        <line x1="60" y1="150" x2="400" y2="150" class="axis"></line>
+        <polyline points="70,188 160,188 300,84 390,84" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <polyline points="70,232 230,148 390,64" fill="none" stroke="var(--ink-3)" stroke-width="1.4" stroke-dasharray="5 4"></polyline>
+        <line class="lead" x1="160" y1="150" x2="160" y2="208"></line>
+        <line class="lead" x1="300" y1="84" x2="300" y2="208"></line>
+        <text class="num-s" x="160" y="222" text-anchor="middle">K1 buy put</text>
+        <text class="num-s" x="300" y="222" text-anchor="middle">K2 sell call</text>
+        <text class="num-s" x="76" y="180" fill="var(--up)">floor below</text>
+        <text class="num-s" x="316" y="76" fill="var(--down)">cap above</text>
+        <text class="lbl-s" x="230" y="252" text-anchor="middle">Stock + buy K1 put + sell K2 call · the call pays for the insurance</text>
+      </g>
+      <g>
+        <text class="ttl" x="670" y="28" text-anchor="middle">Iron condor</text>
+        <line x1="500" y1="150" x2="840" y2="150" class="axis"></line>
+        <polyline points="510,204 560,204 620,116 720,116 780,204 830,204" fill="none" stroke="var(--up)" stroke-width="2.4"></polyline>
+        <line class="lead" x1="560" y1="150" x2="560" y2="212"></line>
+        <line class="lead" x1="620" y1="116" x2="620" y2="212"></line>
+        <line class="lead" x1="720" y1="116" x2="720" y2="212"></line>
+        <line class="lead" x1="780" y1="150" x2="780" y2="212"></line>
+        <text class="num-s" x="560" y="226" text-anchor="middle">buy put</text>
+        <text class="num-s" x="620" y="226" text-anchor="middle">sell put</text>
+        <text class="num-s" x="720" y="226" text-anchor="middle">sell call</text>
+        <text class="num-s" x="780" y="226" text-anchor="middle">buy call</text>
+        <text class="num-s" x="670" y="106" text-anchor="middle" fill="var(--up)">sideways in the middle → keep the credit</text>
+        <text class="num-s" x="516" y="196" fill="var(--down)">loss capped by the wings</text>
+        <text class="lbl-s" x="670" y="252" text-anchor="middle">Sell the middle legs for rent + buy the wings for safety · a bet on "going nowhere"</text>
+      </g>
+    </svg>
+    <figcaption><span class="fig-num">Fig F-3</span>Two intermediate structures. The <b>collar</b> suits a position with a large unrealized gain you want to defend without selling — the call's income offsets the put's premium, locking P&amp;L into the K1–K2 band at near-zero cost. The <b>iron condor</b> is the seller's mindset distilled: the profit is other people's time value — if price expires between the two short strikes, all four legs die and the credit stays.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Strategy</th><th>Legs</th><th>View</th><th>Max loss</th><th>Max gain</th></tr></thead>
+      <tbody>
+        <tr><td><b>Long call</b></td><td>buy call</td><td>sharp rally soon</td><td class="n">premium</td><td class="n">uncapped</td></tr>
+        <tr><td><b>Long put</b></td><td>buy put</td><td>sharp drop / hedge</td><td class="n">premium</td><td class="n">K − premium (to zero)</td></tr>
+        <tr><td><b>Covered call</b></td><td>stock + sell call</td><td>mildly bullish / neutral</td><td class="n">≈ stock risk − premium</td><td class="n">(K − cost) + premium</td></tr>
+        <tr><td><b>Protective put</b></td><td>stock + buy put</td><td>bullish but insured</td><td class="n">locked at (cost − K) + premium</td><td class="n">uncapped − premium</td></tr>
+        <tr><td><b>Collar</b></td><td>stock + buy low-K put + sell high-K call</td><td>defend a big gain at near-zero cost</td><td class="n">locked at the K1 floor</td><td class="n">capped at the K2 ceiling</td></tr>
+        <tr><td><b>Cash-secured put</b></td><td>sell put + hold cash</td><td>happy to buy at K</td><td class="n">K − premium (to zero)</td><td class="n">premium</td></tr>
+        <tr><td><b>Bull call spread</b></td><td>buy low-K call + sell high-K call</td><td>mildly bullish</td><td class="n">net premium</td><td class="n">spread − net premium</td></tr>
+        <tr><td><b>Bear put spread</b></td><td>buy high-K put + sell low-K put</td><td>mildly bearish</td><td class="n">net premium</td><td class="n">spread − net premium</td></tr>
+        <tr><td><b>Bear call spread</b></td><td>sell low-K call + buy high-K call (credit)</td><td>won't rally much (neutral-bearish)</td><td class="n">spread − net credit</td><td class="n">net credit</td></tr>
+        <tr><td><b>Long straddle</b></td><td>same-K call + put</td><td>big move, unknown direction</td><td class="n">both premiums</td><td class="n">uncapped</td></tr>
+        <tr><td><b>Long strangle</b></td><td>OTM call + OTM put (different K)</td><td>big move; cheaper than a straddle but needs a bigger one</td><td class="n">both premiums (lower)</td><td class="n">uncapped</td></tr>
+        <tr><td><b>Calendar spread</b></td><td>sell near-month + buy far-month (same K)</td><td>flat short-term, movement later</td><td class="n">net premium</td><td class="n">time-differential value as the near leg dies</td></tr>
+        <tr><td><b>Iron condor</b></td><td>sell a strangle + buy farther wings</td><td>sideways, volatility falling</td><td class="n">wing width − net credit</td><td class="n">net credit</td></tr>
+        <tr><td><b>The Wheel</b></td><td>cycle: sell cash-secured put → get assigned → sell covered calls → get called away → repeat</td><td>happy to own the stock long-term; harvest premium both ways</td><td class="n">≈ stock risk − accumulated premiums</td><td class="n">steady income + limited spread gains</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note tip">
+    <span class="h mono">HOW TO CHOOSE A STRATEGY</span>
+    <p>Don't start from strategy names — start from <strong>three judgments</strong>: ① <strong>direction</strong> (up / down / sideways / unknown); ② <strong>magnitude</strong> (big move or small); ③ <strong>IV level</strong> (rich or cheap). The combination points straight at the structure: bullish + small move + rich IV → bull spread or covered call; bullish + big move + cheap IV → outright long call; sideways + rich IV → iron condor; unknown direction + big move + cheap IV → straddle/strangle. <strong>Rich IV favors seller structures; only cheap IV justifies buying</strong> — this single habit removes half of all beginner option losses.</p>
+  </div>
+
+  <h3>F.6 Six worked examples</h3>
+  <p>Teaching examples with invented round numbers, ignoring fees and taxes. Let stock S trade at <span class="mono">$100</span>, multiplier 100.</p>
+
+  <div class="cards">
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 1 · LONG CALL</span>
+      <b>Risking $300 on an earnings pop</b>
+      <p>Buy 1 call, one month out, K = $105, premium $3 (pay 3 × 100 = <strong>$300</strong>).<br><br>
+      At expiry S = $115: exercise value (115−105) × 100 = $1,000 → net <strong>+$700 (+233%)</strong>.<br>
+      At expiry S ≤ $105: premium gone, <strong>−$300 (−100%)</strong>.<br>
+      Buying 100 shares instead needs $10,000: at $115 you'd make $1,500 (+15%); at $90 you'd lose $1,000.<br><br>
+      <strong>Lesson: options make the small-probability / big-payoff trade explicit — most OTM options expire worthless, so size every buy as if it will go to zero.</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 2 · COVERED CALL</span>
+      <b>Collecting rent on shares you hold</b>
+      <p>Hold 100 shares (cost $100). Sell 1 call, one month out, K = $110, premium $2 (<strong>+$200</strong>).<br><br>
+      At expiry S = $104: call expires worthless; keep the $200 (≈24% annualized "rent") and the shares.<br>
+      At expiry S = $118: shares called away at $110; total (110−100) × 100 + 200 = <strong>+$1,200</strong> — but you surrendered $800 of upside beyond $110.<br>
+      At expiry S = $88: shares lose $1,200, premium refunds $200 → net <strong>−$1,000</strong>.<br><br>
+      <strong>Lesson: a covered call does not protect the downside — it trades capped upside for certain income.</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 3 · PROTECTIVE PUT</span>
+      <b>Insuring a $10,000 position</b>
+      <p>Hold 100 shares (cost $100). Buy 1 put, three months out, K = $95, premium $2.50 (pay <strong>$250</strong>).<br><br>
+      S crashes to $70: shares lose $3,000, but the put is worth (95−70) × 100 = $2,500 → loss capped at <strong>−$750</strong> ($500 gap + $250 premium).<br>
+      S rallies to $120: shares gain $2,000, put expires → net <strong>+$1,750</strong>.<br><br>
+      <strong>Lesson: insurance costs are certain and recurring (~2.5% per quarter here); buying it permanently drags returns badly — use it around event windows or at extended highs.</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 4 · BULL CALL SPREAD</span>
+      <b>Let the short leg pay half your cost</b>
+      <p>Expecting a mild rise toward $110: buy 1 K = $100 call (pay $4) and sell 1 K = $110 call (collect $1.50); net cost $2.50 (<strong>$250</strong>), breakeven $102.50.<br><br>
+      At expiry S ≥ $110: full spread earned, (110−100) × 100 − 250 = <strong>+$750 (+300%)</strong>.<br>
+      At expiry S = $105: (105−100) × 100 − 250 = <strong>+$250</strong>.<br>
+      At expiry S ≤ $100: <strong>−$250</strong> (versus −$400 on the naked call).<br><br>
+      <strong>Lesson: the short $110 leg cuts cost from $400 to $250 and pulls breakeven from $104 to $102.50 — in exchange for giving up everything above $110. If $110 was your target anyway, that giveaway is free.</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 5 · CASH-SECURED PUT</span>
+      <b>Want to buy at $95? Get paid while you wait</b>
+      <p>You planned a limit buy at $95. Instead: sell 1 put, one month out, K = $95, premium $2 (<strong>+$200</strong>), keeping $9,500 in reserve for assignment.<br><br>
+      At expiry S ≥ $95: the put dies; you keep $200 (~2.1% for the month) — no shares, but the waiting itself got paid. Sell next month's put and repeat.<br>
+      At expiry S = $88: assigned 100 shares at $95; effective cost $95 − 2 = <strong>$93</strong> — $2 cheaper than your original limit order; the $500 paper loss matches what the limit order would have produced anyway.<br><br>
+      Once assigned, turn around and sell covered calls (Example 2); when called away, go back to selling puts — that cycle is <strong>the Wheel</strong>.<br><br>
+      <strong>Lesson: a cash-secured put is a paid limit order. It has exactly one precondition: you would honestly be glad to own this stock at K. Collecting premium on a stock you don't want to own is just naked selling in disguise.</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--accent)">
+      <span class="k mono">EXAMPLE 6 · STRADDLE INTO EARNINGS: IV CRUSH LIVE</span>
+      <b>Right on direction, wrong on the money</b>
+      <p>The night before earnings, IV is pumped to 60%: the K = $100 call and put cost $4 each; the straddle costs $8 (<strong>$800</strong>), breakevens $92 / $108.<br><br>
+      Earnings "beat"; S jumps to $105 (+5%) — but IV collapses to 30%: the call is worth ≈ $5.50, the put ≈ $0.50, total $6 → <strong>−$200</strong>. Direction and movement were both fine; volatility took the money.<br>
+      Had S reached $112: call worth $12+, straddle ≈ $12.50 → <strong>+$450</strong> — only a move beyond the breakevens, i.e. beyond expectations, pays.<br><br>
+      <strong>Lesson: pre-earnings premiums already pre-charge the expected move (about ±8% here). A straddle is not a bet that the stock will move — it's a bet that it will move more than everyone already expects. Flip it around, and that is exactly how sellers (iron condors) harvest the IV crush after the event.</strong></p>
+    </div>
+  </div>
+
+  <h3>F.7 The option risk checklist</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Risk</th><th>Who bears it</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Time decay</b></td><td>buyers</td><td>Theta bills daily; right direction but slow arrival still loses; accelerates near expiry</td></tr>
+        <tr><td><b>Expiring worthless</b></td><td>buyers</td><td>OTM at expiry = total premium loss; the norm, not the accident</td></tr>
+        <tr><td><b>IV crush</b></td><td>buyers</td><td>After the event, implied volatility collapses — the premium shrinks even when direction was right</td></tr>
+        <tr><td><b>Unlimited loss</b></td><td><span style="color:var(--down);font-weight:700">naked sellers</span></td><td>A naked call has uncapped loss; a naked put loses down to zero — <strong>beginners must never sell naked</strong></td></tr>
+        <tr><td><b>Assignment</b></td><td>sellers</td><td>American-style sellers can be assigned any time (especially before ex-dividend dates)</td></tr>
+        <tr><td><b>Liquidity</b></td><td>both</td><td>Deep-OTM and far-dated contracts trade at brutal bid-ask spreads — easy in, hard out</td></tr>
+        <tr><td><b>Leverage</b></td><td>both</td><td>Per dollar committed, options move several times faster than stock; sizing discipline scales accordingly</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <span class="h mono">OPTIONS DISCIPLINE FOR BEGINNERS</span>
+    <p>① Money in long options is <strong>always sized as if it will go to zero</strong> — at most ~5% of the account; ② learn in this order: <strong>covered calls and protective puts</strong> (backed by stock) → spreads → outright directional buys; ③ <strong>never sell naked options</strong>; ④ before every order, write the three answers: max loss, max gain, breakeven; ⑤ option mechanics (exercise style, margin, settlement) differ sharply by market — your local market's official rules govern.</p>
+  </div>
+</section>
+
+<section id="gloss" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">APPENDIX · QUICK REFERENCE</span></div>
+    <h2>Glossary</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Term</th><th>Abbrev.</th><th>One-line definition</th></tr></thead>
+      <tbody>
+        <tr><td><b>Candlestick</b></td><td class="n">K-line</td><td>One symbol per period built from open, close, high, low</td></tr>
+        <tr><td><b>Wick / shadow</b></td><td class="n">—</td><td>Thin lines beyond the body: prices visited but rejected</td></tr>
+        <tr><td><b>Moving average</b></td><td class="n">MA</td><td>Mean of the last N closes; the crowd's average cost</td></tr>
+        <tr><td><b>Golden / death cross</b></td><td class="n">—</td><td>Short MA crossing above / below a longer MA</td></tr>
+        <tr><td><b>Bias ratio</b></td><td class="n">BIAS</td><td>Price's % distance from an MA; the wider, the likelier the snap-back</td></tr>
+        <tr><td><b>Trendline</b></td><td class="n">—</td><td>A line through swing lows (up) or highs (down), extended right</td></tr>
+        <tr><td><b>Support / resistance</b></td><td class="n">S/R</td><td>Zones where declines stall / rallies stall; roles swap after a break</td></tr>
+        <tr><td><b>Impulse / corrective waves</b></td><td class="n">—</td><td>Five waves with the trend / three against it (A, B, C)</td></tr>
+        <tr><td><b>Fibonacci retracement</b></td><td class="n">—</td><td>Support levels at 23.6/38.2/50/61.8/78.6% of a swing</td></tr>
+        <tr><td><b>Fibonacci extension</b></td><td class="n">—</td><td>Targets projected at 61.8/100/161.8% of the prior swing</td></tr>
+        <tr><td><b>Confluence</b></td><td class="n">—</td><td>Several independent tools pointing at one price area</td></tr>
+        <tr><td><b>Reward-risk ratio</b></td><td class="n">R:R</td><td>Target distance ÷ stop distance; take trades at ≥ 2</td></tr>
+        <tr><td><b>1R</b></td><td class="n">—</td><td>The max loss per trade; the unit all results are measured in</td></tr>
+        <tr><td><b>Trailing stop</b></td><td class="n">—</td><td>A stop that follows price favorably — and never moves back</td></tr>
+        <tr><td><b>MACD</b></td><td class="n">—</td><td>Fast-minus-slow EMA (DIF), its smoothing (DEA), and twice their gap (histogram)</td></tr>
+        <tr><td><b>Pinning / saturation</b></td><td class="n">—</td><td>An oscillator stuck at its extreme through a strong trend; signals go blind</td></tr>
+        <tr><td><b>Divergence / beichi</b></td><td class="n">—</td><td>New price extreme without matching indicator force; momentum exhausting</td></tr>
+        <tr><td><b>Fractal / stroke</b></td><td class="n">—</td><td>Chan's smallest parts: 3-candle top/bottom structures joined into strokes</td></tr>
+        <tr><td><b>Pivot (zhongshu)</b></td><td class="n">—</td><td>Overlap of ≥3 sub-level segments; Chan's yardstick for classifying moves</td></tr>
+        <tr><td><b>Three buy/sell points</b></td><td class="n">—</td><td>Type 1 bets the turn, type 2 confirms it, type 3 confirms the new trend</td></tr>
+        <tr><td><b>Call / put</b></td><td class="n">—</td><td>The right to buy / sell the underlying at the strike (never the obligation)</td></tr>
+        <tr><td><b>Premium / theta</b></td><td class="n">—</td><td>Option price = intrinsic + time value; time value decays to zero</td></tr>
+        <tr><td><b>Implied volatility</b></td><td class="n">IV</td><td>The volatility implied by the option's market price; collapses post-event (IV crush)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="traps" class="chap">
+  <div class="chap-head">
+    <div class="tag"><span class="lvl">APPENDIX · PITFALLS</span></div>
+    <h2>Ten common beginner mistakes</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Mistake</th><th>Do instead</th></tr></thead>
+      <tbody>
+        <tr><td class="n">01</td><td>Memorizing dozens of candle patterns, ignoring where they occur</td><td>Pattern + location + volume — all three or nothing</td></tr>
+        <tr><td class="n">02</td><td>Seven MAs and a dozen indicators on one chart</td><td>Three MAs suffice; more indicators = more contradictions = frozen hands</td></tr>
+        <tr><td class="n">03</td><td>Bending trendlines to touch every candle</td><td>Two points define, the third confirms; if it won't draw, there's no structure</td></tr>
+        <tr><td class="n">04</td><td>Sizing up on a "precise" Elliott count</td><td>A count is a probability script — verify with other tools first</td></tr>
+        <tr><td class="n">05</td><td>Stops parked exactly on Fibonacci levels</td><td>Leave a 5–10 tick buffer beyond the level everyone can see</td></tr>
+        <tr><td class="n">06</td><td>Choosing position size first, stop second</td><td>Reverse it: chart sets the stop, 1R sets the size</td></tr>
+        <tr><td class="n">07</td><td>Catching falling knives because "it's down so much"</td><td>Trade only with three aligned timeframes; bottom-fishing is expert work</td></tr>
+        <tr><td class="n">08</td><td>Averaging down into losers</td><td>Never add to a losing position; add only to winners in intact trends</td></tr>
+        <tr><td class="n">09</td><td>Watching minute charts for a position trade, daily charts for a scalp</td><td>Match the analysis timeframe to the holding period</td></tr>
+        <tr><td class="n">10</td><td>Remembering the wins, forgetting the losses</td><td>A review row for every trade; grade the process, not the P&amp;L</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <span class="h mono">ONE LAST THING</span>
+    <p>Technical analysis is, at bottom, a graphical record of <strong>crowd behavior</strong>. Markets change endlessly; greed, fear, herding, and regret do not — that constancy is the entire reason technical analysis keeps working. The tools are only tools: <strong>discipline and money management are what decide the long run.</strong></p>
+  </div>
+</section>
+
+<footer class="foot">
+  <p><strong>Risk disclaimer</strong>: this handbook exists for studying and practicing technical-analysis methods. All charts are schematic illustrations. Nothing here is investment advice, and no return is promised. Stocks, options, and other instruments can lose principal; historical patterns are not guaranteed to repeat. Act within your own risk tolerance and your market's regulations, and consult a licensed professional where appropriate.</p>
+  <p style="margin-top:14px">Arranged in reading order: candlesticks → MAs → trendlines → Elliott → Fibonacci → the trading SOP → risk control → review → indicators → Chan Theory → options. Read in order; drill each layer before the next.</p>
+</footer>
+
+
+
+
+
+
+
+
+
+</main>
+</div>
+
+</body></html>
